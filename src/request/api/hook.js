@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react';
 
 export function useFetch (requestFun,params=[],deps = []) {
   const abortController = new AbortController()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [result, setResult] = useState()
 
   useEffect(() => {
-    setLoading(true)
     requestFun(...params,abortController.signal)
       .then((res) => {
         setResult(res)

@@ -6,34 +6,15 @@ export function getLatestJournal(signal) {
   return GET(url,signal)
 }
 
-//获取下一期期刊
-export function getNextJournal(index,signal) {
-  console.log(index)
-  let url = `/classic/${index}/next`;
-  return GET(url,signal)
-}
-
 //获取前一期期刊
 export function getPreviousJournal(index,signal) {
   let url = `/classic/${index}/previous`;
   return GET(url,signal)
 }
 
-//获取当前期刊的详细信息
-export function getJournalDetail(type,id,signal) {
-  let url = `/classic/${type}/${id}`;
-  return GET(url,signal)
-}
-
 //获取当前期刊点赞数
 export function getJournalLike(type,id,signal) {
   let url = `/classic/${type}/${id}/favor`;
-  return GET(url,signal)
-}
-
-//获取我点赞的期刊
-export function getMyLikeJournal(signal) {
-  let url = '/classic/favor';
   return GET(url,signal)
 }
 

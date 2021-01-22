@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, useWindowDimensions, StyleSheet } from 'react-native';
+import { View, Text, Image, useWindowDimensions, StyleSheet, ActivityIndicator } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -24,9 +24,11 @@ export default function Journal({navigation,route}) {
   let previous = () => {
     if(index !== 0) setIndex(index-1);
   }
-
+  if(loading) {
+    return <ActivityIndicator size="large" />
+  }
   return (
-    <View>
+    <View style={{flex:1}}>
       <Image 
         source={{uri:(result[index]).image}}
         style={{width:dimensions.width,height:dimensions.width*0.66}}
@@ -36,9 +38,9 @@ export default function Journal({navigation,route}) {
         <Feather 
           onPress={previous}
           name="chevron-left" 
-          color="#606266" 
+          color={index === 0 ? "#C0C4CC" : "#606266"}
           size={20} 
-          style={{marginRight:20}}
+          style={styles.btn}
         />
         <Text style={styles.title}>
           {(result[index]).title}
@@ -46,31 +48,39 @@ export default function Journal({navigation,route}) {
         <Feather 
           onPress={next}
           name="chevron-right" 
-          color="#606266" 
+          color={index === result.length-1 ? "#C0C4CC" : "#606266"} 
           size={20} 
-          style={{marginLeft:20}}
+          style={[styles.btn,{textAlign:'right'}]}
         />
       </View>
     </View>
   );
-  
 }
 
 const styles = StyleSheet.create({
   content: {
+    width: '80%',
+    flex: 1,
     marginVertical: 40,
-    marginHorizontal: 20,
+    alignSelf: 'center',
     fontSize: 16,
     color: '#606266'
   },
   titlebox: {
+    marginBottom: 100,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor:'#e0e0e0',
     alignSelf: 'center',
     paddingHorizontal: 20,
-    borderRadius: 4
+    borderRadius: 4,
+    width: '80%'
+  },
+  btn: {
+    height:'100%',
+    lineHeight:40,
+    flex:1
   },
   title: {
     lineHeight: 40,

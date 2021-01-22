@@ -26,7 +26,7 @@ export default function DrawerNavigator() {
       // drawerContent={DrawerContent}
     >
       <Drawer.Screen name="Journal" getComponent={()=> Journal} options={{title: '期刊'}}/>
-      <Drawer.Screen name="Book" getComponent={()=>Book} options={{title: '书籍'}}/>
+      <Drawer.Screen name="Book" getComponent={()=> Book} options={{title:'书籍'}}/>
     </Drawer.Navigator>
   );
 }

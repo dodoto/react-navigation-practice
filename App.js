@@ -3,7 +3,8 @@ import { StatusBar, AppState } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import DrawerNavigator from './src/router/DrawerNavigator';
+// import DrawerNavigator from './src/router/DrawerNavigator';
+import StackNavigator from './src/router/StackNavigator';
 
 
 const App: () => React$Node = () => {
@@ -21,7 +22,7 @@ const App: () => React$Node = () => {
       <StatusBar translucent backgroundColor="transparent" barStyle='dark-content'/>
       <SafeAreaProvider>
           <NavigationContainer>
-            <DrawerNavigator />
+            <StackNavigator />
           </NavigationContainer>
       </SafeAreaProvider>
     </>

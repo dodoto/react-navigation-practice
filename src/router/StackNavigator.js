@@ -2,8 +2,9 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TransitionPresets } from '@react-navigation/stack';
 
-import Journal from '../pages/Journal/index';
-import { JournalOpts } from '../pages/Journal/config/JournalOpts';
+import DrawerNavigator from './DrawerNavigator';
+import BookDetail from '../pages/BookDetail/index';
+import { BookDetailStackOpts } from '../pages/BookDetail/config/BookDetailOpts';
 
 const Stack = createStackNavigator();
 
@@ -18,11 +19,16 @@ const CommonOptions = {
 
 export default function StackNavigator() {
   return (
-    <Stack.Navigator screenOptions={CommonOptions}>
+    <Stack.Navigator screenOptions={CommonOptions} >
       <Stack.Screen 
-        name="Journal"
-        options={JournalOpts}
-        getComponent={()=> Journal} 
+        name="Drawer"
+        options={{headerShown:false}}
+        getComponent={()=> DrawerNavigator} 
+      />
+      <Stack.Screen 
+        name="BookDetail"
+        options={BookDetailStackOpts}
+        getComponent={()=>BookDetail}
       />
     </Stack.Navigator>
   );
