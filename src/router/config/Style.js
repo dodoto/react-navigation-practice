@@ -22,20 +22,8 @@ export const DrawerStyles = StyleSheet.create({
     alignItems: 'center'
   },
   title: {
-    color: '#fff',
+    color: '#505050',
     fontSize: 15,
     lineHeight: 50,
   },
-  version: {
-    color: '#fff',
-    fontSize: 15,
-    textAlign: 'center',
-    marginTop: 35,
-    marginBottom: 15
-  },
-  copyRight: {
-    color: '#fff',
-    fontSize: 9,
-    textAlign: 'center'
-  }
 });

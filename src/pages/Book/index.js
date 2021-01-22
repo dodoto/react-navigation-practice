@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-export default function RemoveAd() {
+export default function Book() {
   return (
     <View>
-      <Text>移除广告</Text>
+      <Text>书籍</Text>
     </View>
   );
 }
