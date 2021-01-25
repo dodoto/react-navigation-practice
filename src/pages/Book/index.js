@@ -1,38 +1,78 @@
-import React, { useRef } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, TextInput, FlatList, StyleSheet, ToastAndroid, BackHandler } from 'react-native';
 
 import BookItem from './components/BookItem'; 
 import { useFetch } from '../../request/api/hook';
 import { getBooks, searchBook } from '../../request/api/book';
+import Loading from '../../components/Loading';
 
-export default function Book({navigation}) {
+export default function Book({navigation,route}) {
 
   const input = useRef(null);
 
-  let {result,loading} = useFetch(getBooks);
+  const {result,loading,setLoading,abortController} = useFetch(getBooks);
 
-  let searchBook = () => {
-    console.log(input.current.value);
+  const [data,setData] = useState();
+
+  const backHandler = () => {
+    if(route.name === 'Book' && navigation.isFocused()) {
+      if(!data) {
+        return false
+      }else{
+        setData(null);
+        return true
+      }
+    }else{
+      return false
+    }
   };
 
-  if(loading) {
-    return null
-  }  
+  const search = () => {
+    setLoading(true);
+    searchBook(abortController.current.signal,value)
+    .then(res => {
+      if(res.books.length){
+        setData(res.books);
+      }else{
+        ToastAndroid.show('没有搜索到相关书籍',500);
+      };
+    })
+    .catch(err => {
+      console.log(err);
+      ToastAndroid.show('发生错误',500);
+    })
+    .finally(()=>{
+      setLoading(false);
+      input.current.clear();
+    })
+  };
+
+  let value = '';
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress',backHandler);
+    return () => BackHandler.removeEventListener('hardwareBackPress',backHandler)
+  },[data]);
+
   return (
     <View style={{flex:1}}>
       <View style={styles.searchbox}>
         <TextInput 
+          onChange={({nativeEvent}) => value = nativeEvent.text}
           ref={input}
           style={styles.searchinput}
           returnKeyType="search"
           placeholder="搜索图书名称"
-          onSubmitEditing={searchBook}
+          onSubmitEditing={search}
         />
       </View>
-      <FlatList 
+      {
+        loading ?
+        <Loading /> :
+        <FlatList 
         columnWrapperStyle={{justifyContent:'space-around'}}
         numColumns={2}
-        data={result}
+        data={data || result}
         keyExtractor={(item) => item.id+''}
         renderItem={({item}) => <BookItem 
                                   author={item.author} 
@@ -44,6 +84,7 @@ export default function Book({navigation}) {
                                 />}
         ListHeaderComponent={<Text style={styles.title}>精选</Text>}
       />
+      }
     </View>
   );
 }

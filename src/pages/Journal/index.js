@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, useWindowDimensions, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Image, useWindowDimensions, StyleSheet } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import Feather from 'react-native-vector-icons/Feather';
 
+import Loading from '../../components/Loading';
 import { getAllJournal } from '../../request/api/journal';
 import { useFetch } from '../../request/api/hook';
 
@@ -25,7 +26,7 @@ export default function Journal({navigation,route}) {
     if(index !== 0) setIndex(index-1);
   }
   if(loading) {
-    return <ActivityIndicator size="large" />
+    return <Loading />
   }
   return (
     <View style={{flex:1}}>

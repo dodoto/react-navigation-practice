@@ -7,7 +7,7 @@ export default memo(function BookItem({author,image,title,id,fav_nums,navigation
     navigation.navigate('BookDetail',{title,id});
   };
   return (
-    <TouchableOpacity onPress={toBookDetail} activeOpacity={.8}>
+    <TouchableOpacity onPress={toBookDetail} activeOpacity={.9}>
       <View style={styles.bookboard}>
         <Image 
           style={{width:120,height:180}}

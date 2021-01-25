@@ -4,13 +4,14 @@ import { Text, View,Image, ScrollView, StyleSheet } from 'react-native';
 import { useFetch } from '../../request/api/hook';
 import { getBookDetail } from '../../request/api/book';
 import BookComment from './components/BookComment';
+import Loading from '../../components/Loading';
 
 export default function BookDetail({route}) {
   
   let { result ,loading} = useFetch(getBookDetail,[route.params.id])
 
   if(loading) {
-    return null
+    return <Loading />
   }  
   return (
     <ScrollView>

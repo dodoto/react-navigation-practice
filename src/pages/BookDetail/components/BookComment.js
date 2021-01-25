@@ -16,7 +16,10 @@ const CommentItem = memo(function CommentItem({content,nums}) {
 export default memo(function BookComment({book_id}) {
   let {result,loading} = useFetch(getBookComment,[book_id]);
   if(loading) {
-    return <Text>没有评论</Text>
+    return <Text>加载评论中</Text>
+  }
+  if(!result.comments.length) {
+    return  <Text>没有评论</Text>
   }
   return (
     <View style={styles.box}>

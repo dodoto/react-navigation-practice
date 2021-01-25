@@ -17,6 +17,7 @@ const commonOpts = {
 export default function DrawerNavigator() {
   return (
     <Drawer.Navigator 
+      backBehavior="none"
       initialRouteName="Journal"
       drawerType="slide"
       screenOptions={commonOpts}

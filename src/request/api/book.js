@@ -7,8 +7,8 @@ export function getBooks(signal) {
 }
 
 //书籍搜索
-export function searchBook(signal) {
-  let url = '/book/search';
+export function searchBook(signal,q) {
+  let url = `/book/search?q=${q}`;
   return GET(url,signal)
 }
 

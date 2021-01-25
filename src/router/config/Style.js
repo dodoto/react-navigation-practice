@@ -6,7 +6,6 @@ export const DrawerStyles = StyleSheet.create({
     marginTop: 80,
     marginBottom: 40,
     textAlign: 'center',
-    backgroundColor: 'yellow',
     width: 80, 
     height: 80,
     borderRadius: 100,
