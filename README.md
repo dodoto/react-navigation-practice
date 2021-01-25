@@ -23,4 +23,4 @@
   ```
   会导致
   Unable to resolve module `path` from `node_modules\@babel\core\lib\config\item.js`: path could not be fou nd within the project.
-  ['github']('https://github.com/facebook/react-native/issues/28624')
+  ['github'](https://github.com/facebook/react-native/issues/28624)
