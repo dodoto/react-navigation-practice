@@ -10,11 +10,11 @@ export function useFetch (requestFun,params=[],deps = []) {
   }, [])
 
   useEffect(() => {
-    // console.log('err',requestFun,err)
     let message;
     requestFun(...params,abortController.current.signal)
       .then(res => setResult(res))
       .catch(err => {
+        console.log('err',requestFun,err)
         message = err.message;
       })
       .finally((res) => {
@@ -24,4 +24,14 @@ export function useFetch (requestFun,params=[],deps = []) {
   }, deps)
 
   return { result, loading, setLoading, abortController }
+}
+
+export function useAbortController() {
+  const abortController = useRef(new AbortController());
+
+  useEffect(() => {
+    return () => abortController.current.abort()
+  }, [])
+
+  return { abortController }
 }

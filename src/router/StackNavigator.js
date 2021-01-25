@@ -5,6 +5,7 @@ import { TransitionPresets } from '@react-navigation/stack';
 import DrawerNavigator from './DrawerNavigator';
 import BookDetail from '../pages/BookDetail/index';
 import { BookDetailStackOpts } from '../pages/BookDetail/config/BookDetailOpts';
+import BookSearch from '../pages/BookSearch/index';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,11 @@ export default function StackNavigator() {
         name="BookDetail"
         options={BookDetailStackOpts}
         getComponent={()=>BookDetail}
+      />
+      <Stack.Screen 
+        name="BookSearch"
+        options={{title:'搜索'}}
+        getComponent={()=>BookSearch}
       />
     </Stack.Navigator>
   );

@@ -16,7 +16,7 @@ export default memo(function BookItem({author,image,title,id,fav_nums,navigation
         <View style={styles.txt}>
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
           <Text style={styles.author} numberOfLines={1} ellipsizeMode="tail">{author}</Text>
-          <Text style={styles.readnum}>{fav_nums}人看过</Text>
+          {fav_nums && <Text style={styles.readnum}>{fav_nums}人看过</Text>}
         </View>
       </View>
     </TouchableOpacity>

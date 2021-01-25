@@ -21,7 +21,7 @@ const headers = { appkey: 'Ct9d2WkCAIytagLB' };
 
 const baseURL = 'http://bl.talelin.com/v1';
 
-function promiseHandler(url,config) {
+function REQUEST(url,config) {
   return new Promise((resolve, reject) => {
       fetch(url,config).then(res => {
           switch (res.status) {
@@ -89,6 +89,6 @@ export function GET(url,signal) {
       headers,
       signal
   };
-  return promiseHandler(url,config);
+  return REQUEST(url,config);
 }
 
