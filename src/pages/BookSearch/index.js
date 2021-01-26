@@ -5,6 +5,7 @@ import { getAllSearchBooks } from '../../request/api/book';
 import { useAbortController } from '../../request/api/hook';
 import BookList from '../Book/components/BookList';
 import Loading from '../../components/Loading';
+import { TestContext } from '../../context/TestContext';
 
 export default function BookSearch({navigation}) {
 
@@ -39,28 +40,30 @@ export default function BookSearch({navigation}) {
   let value = '';
 
   return (
-    <View style={{flex:1}}>
-      <View style={styles.searchbox}>
-        <TextInput 
-          autoFocus
-          onChange={({nativeEvent}) => value = nativeEvent.text}
-          ref={input}
-          style={styles.searchinput}
-          returnKeyType="search"
-          placeholder="输入图书名称"
-          onSubmitEditing={search}
-        />
+    <TestContext.Provider value={{navigation}}>
+      <View style={{flex:1}}>
+        <View style={styles.searchbox}>
+          <TextInput 
+            autoFocus
+            onChange={({nativeEvent}) => value = nativeEvent.text}
+            ref={input}
+            style={styles.searchinput}
+            returnKeyType="search"
+            placeholder="输入图书名称"
+            onSubmitEditing={search}
+          />
+        </View>
+        {
+          loading ? 
+          <Loading />:
+          <BookList 
+            title={data ? '搜索结果' : ''} 
+            data={data} 
+            navigation={navigation}
+          />
+        }
       </View>
-      {
-        loading ? 
-        <Loading />:
-        <BookList 
-          title={data ? '搜索结果' : ''} 
-          data={data} 
-          navigation={navigation}
-        />
-      }
-    </View>
+    </TestContext.Provider>
   );
 }
 

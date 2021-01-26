@@ -6,6 +6,8 @@ import { getBooks } from '../../request/api/book';
 import BookList from './components/BookList';
 import Loading from '../../components/Loading';
 
+import { TestContext } from '../../context/TestContext';
+
 export default function Book({navigation,route}) {
 
   const {result,loading} = useFetch(getBooks);
@@ -13,16 +15,18 @@ export default function Book({navigation,route}) {
   const toSearch = () => navigation.navigate('BookSearch');
 
   return (
-    <View style={{flex:1}}>
-      <View style={styles.searchbox}>
-        <Text style={styles.searchbtn} onPress={toSearch}>搜索</Text>
+    <TestContext.Provider value={{navigation}}>
+      <View style={{flex:1}}>
+        <View style={styles.searchbox}>
+          <Text style={styles.searchbtn} onPress={toSearch}>搜索</Text>
+        </View>
+        {
+          loading ?
+          <Loading /> :
+          <BookList data={result} title={'精选'}/>
+        }
       </View>
-      {
-        loading ?
-        <Loading /> :
-        <BookList data={result} title={'精选'} navigation={navigation}/>
-      }
-    </View>
+    </TestContext.Provider>
   );
 }
 

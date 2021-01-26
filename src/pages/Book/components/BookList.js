@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, Text } from 'react-native';
 
 import BookItem from './BookItem';
 
-export default function BookList({data,title,navigation}) {
+export default function BookList({data,title}) {
   return (
     <FlatList 
       columnWrapperStyle={styles.container}
@@ -16,7 +16,6 @@ export default function BookList({data,title,navigation}) {
                                 title={item.title} 
                                 id={item.id} 
                                 fav_nums={item.fav_nums}
-                                navigation={navigation}
                               />}
       ListHeaderComponent={<Text style={styles.title}>{title}</Text>}
     />
