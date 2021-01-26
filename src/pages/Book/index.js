@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 import { useFetch } from '../../request/api/hook';
 import { getBooks } from '../../request/api/book';
-import BookList from './components/BookList';
+import BookList from '../../components/BookList';
 import Loading from '../../components/Loading';
 
 import { TestContext } from '../../context/TestContext';

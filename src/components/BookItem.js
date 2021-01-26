@@ -1,7 +1,7 @@
 import React, { memo, useContext } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { TestContext } from '../../../context/TestContext';
+import { TestContext } from '../context/TestContext';
 
 export default memo(function BookItem({author,image,title,id,fav_nums}) {
   const { navigation } = useContext(TestContext);
