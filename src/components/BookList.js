@@ -2,6 +2,19 @@ import React from 'react';
 import { FlatList, StyleSheet, Text } from 'react-native';
 
 import BookItem from './BookItem';
+import { keyExtractor } from '../util/fun';
+
+function renderBookItem({item}) {
+  return (
+    <BookItem 
+      author={item.author} 
+      image={item.image} 
+      title={item.title} 
+      id={item.id} 
+      fav_nums={item.fav_nums}
+    />
+  );
+}
 
 export default function BookList({data,title}) {
   return (
@@ -9,14 +22,8 @@ export default function BookList({data,title}) {
       columnWrapperStyle={styles.container}
       numColumns={2}
       data={data}
-      keyExtractor={(item,index) => item.id+''+index}
-      renderItem={({item}) => <BookItem 
-                                author={item.author} 
-                                image={item.image} 
-                                title={item.title} 
-                                id={item.id} 
-                                fav_nums={item.fav_nums}
-                              />}
+      keyExtractor={keyExtractor}
+      renderItem={renderBookItem}
       ListHeaderComponent={<Text style={styles.title}>{title}</Text>}
     />
   );
