@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, FlatList } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 
 import Loading from '../../components/Loading';
@@ -30,17 +30,15 @@ export default function Journal() {
     return <Loading />
   }
   return (
-    <View style={{flex:1}}>
-      <FlatList 
-        data={result}
-        horizontal={true}
-        pagingEnabled
-        keyExtractor={keyExtractor}
-        renderItem={renderJournalItem}
-        showsHorizontalScrollIndicator={false}
-        scrollEventThrottle={1}
-      />
-    </View>
+    <FlatList 
+      data={result}
+      horizontal={true}
+      pagingEnabled
+      keyExtractor={keyExtractor}
+      renderItem={renderJournalItem}
+      showsHorizontalScrollIndicator={false}
+      scrollEventThrottle={1}
+    />
   );
 }
 

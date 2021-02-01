@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { StatusBar, AppState } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
 // import DrawerNavigator from './src/router/DrawerNavigator';
 import StackNavigator from './src/router/StackNavigator';
 

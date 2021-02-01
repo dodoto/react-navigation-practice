@@ -6,6 +6,8 @@ import DrawerNavigator from './DrawerNavigator';
 import BookDetail from '../pages/BookDetail/index';
 import { BookDetailStackOpts } from '../pages/BookDetail/config/BookDetailOpts';
 import BookSearch from '../pages/BookSearch/index';
+import CommentSend from '../pages/CommentSend/index';
+import { CommentSendOpts } from '../pages/CommentSend/config/CommentSendOpts';
 
 const Stack = createStackNavigator();
 
@@ -35,6 +37,11 @@ export default function StackNavigator() {
         name="BookSearch"
         options={{title:'搜索'}}
         getComponent={()=>BookSearch}
+      />
+      <Stack.Screen 
+        name="CommentSend"
+        options={CommentSendOpts}
+        getComponent={()=> CommentSend} 
       />
     </Stack.Navigator>
   );
