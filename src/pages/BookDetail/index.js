@@ -8,10 +8,10 @@ import Loading from '../../components/Loading';
 
 export default function BookDetail({route,navigation}) {
   
-  let { result ,loading} = useFetch(getBookDetail,[route.params.id]);
+  let { result ,loading } = useFetch(getBookDetail,[route.params.id]);
 
   let toCommentSend = () => {
-    navigation.navigate('CommentSend');
+    navigation.navigate('CommentSend',{id:route.params.id});
   };
 
   if(loading) {

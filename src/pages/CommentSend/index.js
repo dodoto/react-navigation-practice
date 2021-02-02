@@ -1,9 +1,26 @@
 import React,{ useState }  from 'react';
-import { View, KeyboardAvoidingView, TextInput, Button, Text, ToastAndroid, StyleSheet } from 'react-native';
+import { 
+  Text, 
+  View, 
+  Modal,
+  Button,
+  TextInput, 
+  ToastAndroid, 
+  StyleSheet,
+  KeyboardAvoidingView, 
+} from 'react-native';
 
-export default function CommentSend({navigation}) {
+import Loading from '../../components/Loading';
+import { postBookComment } from '../../request/api/book';
+import { useAbortController } from '../../request/api/hook';
+
+export default function CommentSend({navigation,route}) {
 
   const [txt,setTxt] = useState('');
+
+  const [loading,setLoading] = useState(false);
+
+  const { abortController } = useAbortController();
 
   const txtChangeHandler = text => {
     if(txt.length < 11) {
@@ -16,8 +33,23 @@ export default function CommentSend({navigation}) {
   const send = () => {
     let sendTxt = txt.trim();
     if(sendTxt) {
-      ToastAndroid.show('发送成功',400);
-      navigation.goBack();
+      setLoading(true);
+      //params = {book_id: int, content: string length=12}
+      postBookComment({book_id:route.params.id,content:sendTxt},abortController.signal)
+      .then(res => {
+        if(res.error_code){
+          ToastAndroid.show(res.msg,400);
+        }else{
+          ToastAndroid.show('发送成功,但是不会显示出来',400);
+        };
+      })
+      .catch(err => console.log(err))
+      .finally(()=> {
+        setLoading(false);
+        requestAnimationFrame(()=>{
+          navigation.goBack();
+        });
+      })
     }else{  
       ToastAndroid.show('发送内容不能为空',400);
     }
@@ -33,11 +65,15 @@ export default function CommentSend({navigation}) {
           value={txt}
           onChangeText={txtChangeHandler}
           autoFocus
+          numberOfLines={1}
           style={styles.input}/> 
-              <Text style={styles.txtlimit}>{txt.length}/12</Text>
+          <Text style={styles.txtlimit}>{txt.length}/12</Text>
         </View>
         <Button title="发送" color="#409EFF" onPress={send}/>
       </KeyboardAvoidingView>
+      <Modal visible={loading} transparent={true}>
+        <Loading color={"#fff"}/>
+      </Modal>
     </View>
   );
 }
@@ -57,13 +93,14 @@ const styles = StyleSheet.create({
     borderWidth:1,
     borderRadius:5,
     height:40,
-    textAlignVertical:'top',
+    // textAlignVertical:'top',
     paddingHorizontal:5,
   },
   txtlimit: {
     position:'absolute',
     right:14,
     bottom:14,
+    fontSize: 12,
     color:'#C0C4CC'
   }
 });

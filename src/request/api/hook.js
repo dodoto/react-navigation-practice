@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { ToastAndroid } from 'react-native';
 
 export function useFetch (requestFun,params=[],deps = []) {
   const abortController = useRef(new AbortController());
@@ -14,7 +15,7 @@ export function useFetch (requestFun,params=[],deps = []) {
     requestFun(...params,abortController.current.signal)
       .then(res => setResult(res))
       .catch(err => {
-        console.log('err',requestFun,err)
+        if(err.name !== 'AbortError') ToastAndroid.show(err,300);
         message = err.message;
       })
       .finally((res) => {

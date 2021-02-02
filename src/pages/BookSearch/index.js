@@ -28,7 +28,7 @@ export default function BookSearch({navigation}) {
       };
     })
     .catch(err => {
-      console.log(err);
+      // console.log(err);
       ToastAndroid.show('发生错误',500);
     })
     .finally(()=>{

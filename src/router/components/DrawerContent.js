@@ -6,7 +6,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { DrawerStyles } from '../config/Style';
 
 export default function DrawerContent({navigation,state}) {
-  console.log(state);
+  // console.log(state);
   let jump = (routerName) => {
     if(state.route.name === routerName) {
       return

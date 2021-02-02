@@ -17,7 +17,7 @@
  *
  *
  * ****/
-const headers = { appkey: 'Ct9d2WkCAIytagLB' };
+const HEADERS = { appkey: 'Ct9d2WkCAIytagLB' };
 
 const baseURL = 'http://bl.talelin.com/v1';
 
@@ -66,7 +66,7 @@ function REQUEST(url,config) {
                   reject(res.status)
                   break;
               default :
-                  console.log(res.status);
+                //   console.log(res.status);
                   reject(res)
                   break;
           }
@@ -76,17 +76,23 @@ function REQUEST(url,config) {
   })
 }
 
-export function POST(url, data = {}) {
-  let headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-  let config = {method: 'POST', body: qs.stringify(data), headers};
-  return promiseHandler(url, config);
+export function POST(url,signal, data = {}) {
+  url = baseURL + url;
+  let headers = Object.assign({'Content-Type': 'application/json'},HEADERS);
+  let config = {
+    method: 'POST', 
+    body: JSON.stringify(data), 
+    headers,
+    signal
+  };
+  return REQUEST(url, config);
 }
 
 export function GET(url,signal) {
   url = baseURL + url;
   let config = {
       method: 'GET',
-      headers,
+      headers: HEADERS,
       signal
   };
   return REQUEST(url,config);
