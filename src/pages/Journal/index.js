@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
+import { FlatList } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 
 import Loading from '../../components/Loading';
