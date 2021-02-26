@@ -24,7 +24,7 @@ export function useFetch (requestFun,params=[],deps = []) {
       })
   }, deps)
 
-  return { result, loading, setLoading, abortController }
+  return { result, loading, setLoading, abortController, setResult }
 }
 
 export function useAbortController() {
@@ -36,3 +36,4 @@ export function useAbortController() {
 
   return { abortController }
 }
+

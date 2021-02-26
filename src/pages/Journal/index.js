@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { FlatList } from 'react-native';
-import SplashScreen from 'react-native-splash-screen';
+
 
 import Loading from '../../components/Loading';
 import JournalItem from './components/JouranlItem';
@@ -19,10 +19,6 @@ function renderJournalItem({item}) {
 }
 
 export default function Journal() {
-
-  useEffect(()=>{
-    SplashScreen.hide();
-  },[]);
 
   let { result, loading } = useFetch(getAllJournal);
 
