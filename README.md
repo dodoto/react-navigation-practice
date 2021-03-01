@@ -1,11 +1,92 @@
 # lucky-draw 
 
 # 路由说明
-  1. 练习抽屉路由
+  1. TVandMovie = TopTab路由
 
-  2. Book + Journal  = 抽屉路由
+  2. Book + Journal + TopTab路由  = 抽屉路由
 
-  3. 抽屉路由 + BookDetail = Stack 路由(app)
+  3. 抽屉路由 + Detail + CommentSend = Stack 路由(app)
+
+# src目录说明 
+  ```
+  ├─src
+  │  ├─components                           //公共组件
+  │  │      BookItem.js
+  │  │      BookList.js
+  │  │      Loading.js
+  │  │      TVandMovieList.js
+  │  │      
+  │  ├─context                              //Context,目前仅用于传递navigation
+  │  │      TestContext.js
+  │  │      
+  │  ├─pages                                //页面
+  │  │  ├─Book                              //书籍
+  │  │  │      index.js
+  │  │  │      
+  │  │  ├─BookDetail                        //书籍详情
+  │  │  │  │  index.js
+  │  │  │  │  
+  │  │  │  ├─components                     
+  │  │  │  │      BookComment.js
+  │  │  │  │      
+  │  │  │  └─config
+  │  │  │          BookDetailOpts.js
+  │  │  │          
+  │  │  ├─BookSearch                         //书籍搜索
+  │  │  │      index.js
+  │  │  │      
+  │  │  ├─CommentSend                        //发送评论
+  │  │  │  │  index.js
+  │  │  │  │  
+  │  │  │  └─config
+  │  │  │          CommentSendOpts.js
+  │  │  │          
+  │  │  ├─Journal                             //期刊
+  │  │  │  │  index.js
+  │  │  │  │  
+  │  │  │  ├─components
+  │  │  │  │      JouranlItem.js
+  │  │  │  │      
+  │  │  │  └─config
+  │  │  │          JournalOpts.js
+  │  │  │          
+  │  │  ├─TVandMovie                          //fix 字幕组
+  │  │  │  │  index.js
+  │  │  │  │  
+  │  │  │  └─components
+  │  │  │          Pagination.js
+  │  │  │          TVandMovieItem.js
+  │  │  │          
+  │  │  └─TVandMovieDetail                     // 字幕组资源详情
+  │  │      │  index.js
+  │  │      │  
+  │  │      └─config
+  │  │              TVandMovieDetailOpts.js
+  │  │              
+  │  ├─request                          
+  │  │  │  https.js                             //基础请求函数
+  │  │  │  
+  │  │  └─api
+  │  │          book.js
+  │  │          hook.js
+  │  │          journal.js
+  │  │          tv&movie.js
+  │  │          
+  │  ├─router                                   //路由
+  │  │  │  DrawerNavigator.js
+  │  │  │  StackNavigator.js
+  │  │  │  TopNavigator.js
+  │  │  │  
+  │  │  ├─components
+  │  │  │      DrawerContent.js
+  │  │  │      
+  │  │  └─config
+  │  │          Style.js
+  │  │          
+  │  └─util                                     //工具函数和常量
+  │          const.js
+  │          fun.js
+  ``` 
   
 # 项目运行
   1. 按照 react-native 官网配置好环境.
