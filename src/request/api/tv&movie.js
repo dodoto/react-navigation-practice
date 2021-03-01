@@ -18,10 +18,7 @@ import Cheerio from 'cheerio-without-node-native';
 export function getTvAndMoVieList(cat,set,signal) {
   return new Promise((resolve,reject) => {
     let url = `http://www.zimuxia.cn/我们的作品?cat=${cat}&set=${set}`
-    fetch(url,{
-      method: 'GET',
-      signal
-    })
+    fetch(url,{method: 'GET',signal})
     .then(res => {
       return res.text()
     })
@@ -40,6 +37,16 @@ export function getTvAndMoVieList(cat,set,signal) {
       });
       resolve({pageNum,data})
     })
+    .catch(err => reject(err))
+  })
+}
+
+export function getTvAndMovieDetail(url,signal) {
+  return new Promise((resolve,reject) => {
+    // let url = `http://www.zimuxia.cn/portfolio/${name}`;
+    fetch(url,{method: 'GET',signal})
+    .then(res => res.text())
+    .then(res => resolve(res))
     .catch(err => reject(err))
   })
 }

@@ -18,7 +18,7 @@ export function useFetch (requestFun,params=[],deps = []) {
         if(err.name !== 'AbortError') ToastAndroid.show(err,300);
         message = err.message;
       })
-      .finally((res) => {
+      .finally(() => {
         // 'Aborted'
         if(message !== 'Aborted') setLoading(false)
       })

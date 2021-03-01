@@ -8,6 +8,8 @@ import { BookDetailStackOpts } from '../pages/BookDetail/config/BookDetailOpts';
 import BookSearch from '../pages/BookSearch/index';
 import CommentSend from '../pages/CommentSend/index';
 import { CommentSendOpts } from '../pages/CommentSend/config/CommentSendOpts';
+import TVandMovieDetail from '../pages/TVandMovieDetail/index';
+import { TVandMovieDetailStackOpts } from '../pages/TVandMovieDetail/config/TVandMovieDetailOpts';
 
 const Stack = createStackNavigator();
 
@@ -42,6 +44,11 @@ export default function StackNavigator() {
         name="CommentSend"
         options={CommentSendOpts}
         getComponent={()=> CommentSend} 
+      />
+      <Stack.Screen 
+        name="TVandMovieDetail"
+        options={TVandMovieDetailStackOpts}
+        getComponent={() => TVandMovieDetail}
       />
     </Stack.Navigator>
   );

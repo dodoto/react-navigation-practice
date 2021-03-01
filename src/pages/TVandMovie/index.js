@@ -7,6 +7,7 @@ import Pagination from './components/Pagination';
 import { keyExtractor } from '../../util/fun';
 import { useFetch } from '../../request/api/hook';
 import { getTvAndMoVieList } from '../../request/api/tv&movie';
+import { TestContext } from '../../context/TestContext';
 
 //图片宽高比 1 : 1.5
 
@@ -17,7 +18,7 @@ function renderTVandMovieItem({item:{imgUrl,title,cat,href}}) {
 }
 
 
-export default function TVandMovie({route}) {
+export default function TVandMovie({route,navigation}) {
 
   const pageNo = useRef(1);
 
@@ -45,12 +46,14 @@ export default function TVandMovie({route}) {
       {
         loading ?
         <Loading /> :
-        <FlatList 
-          data={result.data}
-          keyExtractor={keyExtractor}
-          renderItem={renderTVandMovieItem}
-          ListFooterComponent={<Pagination size={result.pageNum} changePage={changePage} current={pageNo.current}/>}
-        />
+        <TestContext.Provider value={{navigation}}>
+          <FlatList 
+            data={result.data}
+            keyExtractor={keyExtractor}
+            renderItem={renderTVandMovieItem}
+            ListFooterComponent={<Pagination size={result.pageNum} changePage={changePage} current={pageNo.current}/>}
+          />
+        </TestContext.Provider>
       }
     </>
   );

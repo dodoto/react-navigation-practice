@@ -34,7 +34,7 @@ export default function DrawerNavigator() {
           headerTintColor:'#fff',
           headerPressColorAndroid: '#fff',
           headerStyle: {
-            backgroundColor: '#000',
+            backgroundColor: '#1f1f1f',
             elevation: 0
           }
         }} />

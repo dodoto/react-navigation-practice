@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { StatusBar } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
@@ -15,7 +14,7 @@ const TabBarOptions = {
     backgroundColor: '#fdd200',
   },
   style: {
-    backgroundColor: '#000'
+    backgroundColor: '#1f1f1f'
   },
   tabStyle: {
     width: 100,
@@ -30,7 +29,6 @@ export default function TopTabNavigator() {
 
   return (
     <>
-      <StatusBar barStyle="light-content"/>
       <TopTab.Navigator
         lazy
         tabBarOptions={TabBarOptions}
