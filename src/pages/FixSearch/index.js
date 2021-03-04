@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
     color: '#fdd200',
     fontSize: 14,
     textDecorationLine: 'underline',
-    marginLeft: 20
+    marginLeft: 20,
+    marginBottom: 60
   }
 });
