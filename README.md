@@ -98,6 +98,8 @@
   4. 运行 react-native run-android 即可
 
 # 问题记录
+  1.
+
   在代码中引入 
   ```
   import { resolvePlugin } from '@babel/core';
@@ -105,3 +107,7 @@
   会导致
   Unable to resolve module `path` from `node_modules\@babel\core\lib\config\item.js`: path could not be fou nd within the project.
   [详情](https://github.com/facebook/react-native/issues/28624)
+
+  2.
+
+  TouchableNativeFeedback 需要一个 View 作为根

@@ -10,6 +10,7 @@ import CommentSend from '../pages/CommentSend/index';
 import { CommentSendOpts } from '../pages/CommentSend/config/CommentSendOpts';
 import TVandMovieDetail from '../pages/TVandMovieDetail/index';
 import { TVandMovieDetailStackOpts } from '../pages/TVandMovieDetail/config/TVandMovieDetailOpts';
+import FixSearch from '../pages/FixSearch/index';
 
 const Stack = createStackNavigator();
 
@@ -49,6 +50,11 @@ export default function StackNavigator() {
         name="TVandMovieDetail"
         options={TVandMovieDetailStackOpts}
         getComponent={() => TVandMovieDetail}
+      />
+      <Stack.Screen 
+        name="FixSearch"
+        options={TVandMovieDetailStackOpts}
+        getComponent={() => FixSearch}
       />
     </Stack.Navigator>
   );

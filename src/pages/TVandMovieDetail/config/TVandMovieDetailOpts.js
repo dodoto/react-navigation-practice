@@ -1,5 +1,5 @@
 export const TVandMovieDetailStackOpts = ({navigation,route}) => ({
-  title: route.params.title,
+  title: route.params.title || 'Search Result',
   headerTintColor: '#fff',
   headerPressColorAndroid: '#fff',
   headerStyle: {

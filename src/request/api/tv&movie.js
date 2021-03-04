@@ -41,6 +41,28 @@ export function getTvAndMoVieList(cat,set,signal) {
   })
 }
 
+export function getFixSearchResult(query,signal) {
+  let url = `http://www.zimuxia.cn/?s=${query}`;
+  return new Promise((resolve,reject) => {
+    fetch(url,{method:'GET',signal})
+    .then(res => res.text())
+    .then(res => {
+      let $ = Cheerio.load(res);
+      let titles = $('.post-title a');
+      let introduces = $('.post-content-content p');
+      let data = [];
+      titles.each((index,item) => {
+        let { href } = item.attribs;
+        let { data:title } = item.children[0];
+        let { data:introduce } = introduces[index].children[0];
+        data.push({href,title,introduce});
+      })
+      resolve(data)
+    })
+    .catch(err => reject(err))
+  })
+}
+
 export function getTvAndMovieDetail(url,signal) {
   return new Promise((resolve,reject) => {
     // let url = `http://www.zimuxia.cn/portfolio/${name}`;

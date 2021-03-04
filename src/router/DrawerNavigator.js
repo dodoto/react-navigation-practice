@@ -1,11 +1,14 @@
 import React from 'react';
-import { StatusBar } from 'react-native';
+import { Text, TouchableNativeFeedback, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Journal  from '../pages/Journal/index';
 import Book from '../pages/Book/index';
 import TopTab from './TopNavigator';
 import DrawerContent from './components/DrawerContent';
+import DrawerRightBtn from './components/DrawerRightBtn';
+
+import { TestContext } from '../context/TestContext';
 
 const Drawer = createDrawerNavigator();
 
@@ -15,10 +18,10 @@ const commonOpts = {
   headerTinTColor: '#505050'
 }
 
-export default function DrawerNavigator() {
+export default function DrawerNavigator({navigation}) {
+
   return (
-    <>
-      <StatusBar barStyle="dark-content"/>
+    <TestContext.Provider value={{navigation}}>
       <Drawer.Navigator 
         backBehavior="none"
         initialRouteName="TVandMovie"
@@ -32,6 +35,7 @@ export default function DrawerNavigator() {
         <Drawer.Screen name="TVandMovie" getComponent={()=>TopTab} options={{
           title:'FIX字幕侠',
           headerTintColor:'#fff',
+          headerRight: DrawerRightBtn,
           headerPressColorAndroid: '#fff',
           headerStyle: {
             backgroundColor: '#1f1f1f',
@@ -41,6 +45,6 @@ export default function DrawerNavigator() {
         <Drawer.Screen name="Journal" getComponent={()=> Journal} options={{title: '期刊'}}/>
         <Drawer.Screen name="Book" getComponent={()=> Book} options={{title:'书籍'}}/>
       </Drawer.Navigator>
-    </>
+    </TestContext.Provider>
   );
 }
