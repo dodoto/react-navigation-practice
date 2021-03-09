@@ -5,6 +5,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import Journal  from '../pages/Journal/index';
 import Book from '../pages/Book/index';
 import TopTab from './TopNavigator';
+import Novels from '../pages/Novels/index';
 import DrawerContent from './components/DrawerContent';
 import DrawerRightBtn from './components/DrawerRightBtn';
 
@@ -44,6 +45,7 @@ export default function DrawerNavigator({navigation}) {
         }} />
         <Drawer.Screen name="Journal" getComponent={()=> Journal} options={{title: '期刊'}}/>
         <Drawer.Screen name="Book" getComponent={()=> Book} options={{title:'书籍'}}/>
+        <Drawer.Screen name="Novels" getComponent={()=>Novels} options={{title:'小说'}}/>
       </Drawer.Navigator>
     </TestContext.Provider>
   );

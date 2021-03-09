@@ -14,7 +14,7 @@ const App: () => React$Node = () => {
       StatusBar.setBarStyle('dark-content');
     };
     AppState.addEventListener('focus',handler);
-    return () => AppState.removeEventListener('focus',handler);
+    return () => AppState.removeEventListener('focus',handler);    
   },[]);
   return (
     <>

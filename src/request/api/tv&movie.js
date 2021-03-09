@@ -19,9 +19,7 @@ export function getTvAndMoVieList(cat,set,signal) {
   return new Promise((resolve,reject) => {
     let url = `http://www.zimuxia.cn/我们的作品?cat=${cat}&set=${set}`
     fetch(url,{method: 'GET',signal})
-    .then(res => {
-      return res.text()
-    })
+    .then(res =>  res.text())
     .then(res => {
       let $ = Cheerio.load(res);
       let pgItems = $('.pg-item a');                      //详情链接 

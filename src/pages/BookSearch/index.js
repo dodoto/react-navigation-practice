@@ -32,8 +32,10 @@ export default function BookSearch({navigation}) {
       ToastAndroid.show('发生错误',500);
     })
     .finally(()=>{
-      setLoading(false);
-      input.current.clear();
+      if(input.current) {
+        setLoading(false);
+        input.current.clear();
+      }
     })
   };
 

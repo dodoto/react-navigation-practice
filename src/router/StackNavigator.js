@@ -11,6 +11,8 @@ import { CommentSendOpts } from '../pages/CommentSend/config/CommentSendOpts';
 import TVandMovieDetail from '../pages/TVandMovieDetail/index';
 import { TVandMovieDetailStackOpts } from '../pages/TVandMovieDetail/config/TVandMovieDetailOpts';
 import FixSearch from '../pages/FixSearch/index';
+import NovelSearch from '../pages/NovelSearch/index';
+import { NovelSearchOpts } from '../pages/NovelSearch/config/NovelSearchOpts';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +26,7 @@ const CommonOptions = {
 
 
 export default function StackNavigator() {
+  // console.log(useSafeAreaInsets());
   return (
     <Stack.Navigator screenOptions={CommonOptions} >
       <Stack.Screen 
@@ -55,6 +58,11 @@ export default function StackNavigator() {
         name="FixSearch"
         options={TVandMovieDetailStackOpts}
         getComponent={() => FixSearch}
+      />
+      <Stack.Screen 
+        name="NovelSearch"
+        options={NovelSearchOpts}
+        getComponent={()=>NovelSearch}
       />
     </Stack.Navigator>
   );

@@ -111,3 +111,11 @@
   2.
 
   TouchableNativeFeedback 需要一个 View 作为根
+
+  3.
+
+  键盘收起会导致路由上下切换的跳转动画卡顿
+  ```
+  "@react-navigation/native": "^5.9.0"
+  "@react-navigation/stack": "^5.13.0"
+  ```
