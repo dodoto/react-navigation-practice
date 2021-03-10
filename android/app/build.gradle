@@ -220,6 +220,6 @@ apply from: file("../../node_modules/@react-native-community/cli-platform-androi
 
 // //添加 react-native-vector-icons
 project.ext.vectoricons = [
-    iconFontNames: [ 'Feather.ttf' ]
+    iconFontNames: [ 'Feather.ttf', 'Ionicons,ttf' ]
 ]
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

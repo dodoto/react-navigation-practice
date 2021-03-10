@@ -1,4 +1,5 @@
 import React from 'react';
+import { Animated } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TransitionPresets } from '@react-navigation/stack';
 
@@ -13,6 +14,9 @@ import { TVandMovieDetailStackOpts } from '../pages/TVandMovieDetail/config/TVan
 import FixSearch from '../pages/FixSearch/index';
 import NovelSearch from '../pages/NovelSearch/index';
 import { NovelSearchOpts } from '../pages/NovelSearch/config/NovelSearchOpts';
+import NovelDetail from '../pages/NovelDetail/index';
+import { NovelDetailOpts } from '../pages/NovelDetail/config/NovelDetailOpts';
+import NovelRead from '../pages/NovelRead/index';
 
 const Stack = createStackNavigator();
 
@@ -23,7 +27,6 @@ const CommonOptions = {
   headerTitleAlign: 'center',
   ...TransitionPresets.SlideFromRightIOS
 };
-
 
 export default function StackNavigator() {
   // console.log(useSafeAreaInsets());
@@ -63,6 +66,16 @@ export default function StackNavigator() {
         name="NovelSearch"
         options={NovelSearchOpts}
         getComponent={()=>NovelSearch}
+      />
+      <Stack.Screen
+        name="NovelDetail"
+        options={NovelDetailOpts}
+        getComponent={()=>NovelDetail}
+      />
+      <Stack.Screen 
+        name="NovelRead"
+        options={{headerShown:false}}
+        getComponent={()=>NovelRead}
       />
     </Stack.Navigator>
   );

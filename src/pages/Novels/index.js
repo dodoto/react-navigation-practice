@@ -1,39 +1,27 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, InteractionManager, Keyboard } from 'react-native';
+import React, { useRef } from 'react';
+import { View, Text, TextInput, StyleSheet, Keyboard, ToastAndroid } from 'react-native';
 
-import { novelSearch } from '../../request/api/novels';
-import { useAbortController } from '../../request/api/hook';
-import { useEffect } from 'react/cjs/react.development';
-
-// 小说搜索页 => 小说搜索结果页 => 小说详情页 => 小说阅读页
+// 小说搜索页 => 小说搜索结果页(ok) => 小说详情页 => 小说阅读页
 
 export default function Novels({navigation}) {
 
-  const { abortController: { current: { signal } } } = useAbortController();
-
   const query = useRef();
 
-  const [result,setResult] = useState([]);
-
   const search = () => {
-    setTimeout(()=>{
-      navigation.navigate('NovelSearch')
-    },100)
-    
-    return
-    novelSearch(query.current,signal)
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
-    .finally(() => console.log('over'))
-  }
+    let keyword = query.current ? query.current.trim() : '';
+    if(keyword) {
+      Keyboard.dismiss();
+      setTimeout(()=>{
+        navigation.navigate('NovelSearch',{keyword});
+      },100)
+    }else{
+      ToastAndroid.show('请输入搜索的关键字',300);
+    }
+  };
 
   const changeHandler = (text) => {
     query.current = text;
   };
-
-  useEffect(()=>{
-
-  },[])
 
   return (
     <>
