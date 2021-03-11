@@ -1,9 +1,12 @@
-import React, { useEffect, useState, memo } from 'react';
-import { View, Text, ScrollView, StatusBar } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, DeviceEventEmitter } from 'react-native';
 import AutoHeightWebView from 'react-native-autoheight-webview';
 import { ScrollView as GesScrollView } from 'react-native-gesture-handler'
 
 import Loading from '../../components/Loading';
+import HeadMenu from './component/HeadMenu';
+import FootMenu from './component/FootMenu';
+import Catalog from './component/Catalog';
 import { useFetch } from '../../request/api/hook';
 import { novelRead } from '../../request/api/novels';
 
@@ -15,40 +18,23 @@ import { novelRead } from '../../request/api/novels';
 // 4 ACTIVE
 // 5 END
 
-const Top = memo(function TopMenu() {
-  return (
-    <View style={{height:40,backgroundColor:'skyblue'}}>
-      <Text>我是上面</Text>
-    </View>
-  );
-})
+//使用 DeviceEventEmitter 进行组件通讯
 
-const Bottom = memo(function BottomMenu() {
-  return (
-    <View style={{height:40,backgroundColor:'skyblue'}}>
-      <Text>我是下面</Text>
-    </View>
-  );
-})
-
-export default function NovelRead({navigation,route:{params:{href}}}) {
+export default function NovelRead({navigation,route:{params:{href,title,result:catalog}}}) {
 
   const { result, loading } = useFetch(novelRead,[href]);
-
-  const [menuShow,setMenuShow] = useState(false);
 
   const stateChange= ({nativeEvent}) => {
     let { oldState, state } =nativeEvent;
     if(oldState === 2 && state === 5) {
-      setMenuShow(!menuShow);
-      console.log('这是一次点击,操作菜单')
+      DeviceEventEmitter.emit('callMenu');
     }
   }
 
   return (
     <>
       <StatusBar hidden/>
-      <Top />
+      <HeadMenu title={title} navigation={navigation}/>
       {
         loading ?
         <Loading />:
@@ -62,7 +48,8 @@ export default function NovelRead({navigation,route:{params:{href}}}) {
           />
         </GesScrollView>
       }
-      <Bottom />
+      <FootMenu />
+      <Catalog catalog={catalog} currentHref={href} navigation={navigation}/>
     </>
   );
 }

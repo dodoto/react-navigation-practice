@@ -52,7 +52,7 @@ export default function NovelDetail({ navigation, route: { params:{ id } } }) {
   },[page]);
 
   return (
-    <TestContext.Provider value={{navigation}}>
+    <TestContext.Provider value={{navigation,result}}>
       {
         loading ?
         <Loading />:

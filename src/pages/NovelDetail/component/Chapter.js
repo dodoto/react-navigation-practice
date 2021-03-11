@@ -5,10 +5,10 @@ import { TestContext } from '../../../context/TestContext';
 
 export default memo(function Chapter({title,href}) {
 
-  const { navigation } = useContext(TestContext);
+  const { navigation, result } = useContext(TestContext);
 
   const toNovelRead = () => {
-    navigation.navigate('NovelRead',{href})
+    navigation.navigate('NovelRead',{href,title,result})
   }
 
   return (
