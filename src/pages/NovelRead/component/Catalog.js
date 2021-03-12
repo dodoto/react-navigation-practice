@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import {View, Text, StyleSheet, DeviceEventEmitter, BackHandler, FlatList } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -9,9 +9,9 @@ import { keyExtractor } from '../../../util/fun';
 import CatalogItem from './CatalogItem';
 
 
-function renderItem({item,index}) {
+function renderItem({item}) {
   return (
-    <CatalogItem title={item.chapter} href={item.href} />
+    <CatalogItem title={item.chapter} href={item.href} index={item.index}/>
   );
 }
 
@@ -21,11 +21,11 @@ function getItemLayout(data,index) {
   }
 }
 
-export default memo(function Catalog({catalog,currentHref,navigation}) {
+export default memo(function Catalog({catalog,index}) {
 
-  const href = useRef(currentHref);             //当前章节
+  const [currentIndex,setCurrentIndex] = useState(index)         //当前章节
 
-  const catalogRef = useRef();                  //flatlist实例 
+  const catalogRef = useRef();                                   //flatlist实例 
 
   const { translate:translateX, state } = useReadMenuAnima(W,'callCatalog');
 
@@ -52,15 +52,25 @@ export default memo(function Catalog({catalog,currentHref,navigation}) {
     BackHandler.addEventListener('hardwareBackPress',handler)
     return () => BackHandler.removeEventListener('hardwareBackPress',handler)
   },[])
+
+  //监听换章,更新当前章节标题下标
+  useEffect(()=>{
+    let handler = ({index,hidde}) => {
+      setCurrentIndex(index);
+      //如果是隐藏目录的时候换章
+      if(hidde) catalogRef.current.scrollToIndex({animated:false,index});
+    };
+    DeviceEventEmitter.addListener('chapterTurn',handler);
+    return () => DeviceEventEmitter.removeAllListeners('chapterTurn');
+  },[])
   
   //滚动到当前章节
   useEffect(()=>{
-    let index = catalog.findIndex(item => item.href === currentHref);
     if(index > 0) catalogRef.current.scrollToIndex({animated:false,index});
   },[])
 
   return (
-    <TestContext.Provider value={{href,navigation,result:catalog}}>
+    <TestContext.Provider value={{currentIndex}}>
       <View style={[styles.wrapper]} pointerEvents="box-none">
         {/* 目录 */}
         <Animated.View style={[styles.catalogBox,{transform:[{translateX}]}]}>

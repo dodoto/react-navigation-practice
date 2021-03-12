@@ -1,11 +1,14 @@
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
 import { Text, StyleSheet, TouchableNativeFeedback, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import Feather from 'react-native-vector-icons/Feather';
 
 import { useReadMenuAnima } from '../../../request/api/hook';
+import { TestContext } from '../../../context/TestContext';
 
 export default memo(function HeadMenu({title,navigation}) {
+
+  const { theme } = useContext(TestContext);
 
   const { translate:translateY } = useReadMenuAnima(-60,'callMenu');
 
@@ -14,17 +17,17 @@ export default memo(function HeadMenu({title,navigation}) {
   };
 
   return (
-    <Animated.View style={[styles.wrapper,{transform:[{translateY}]}]}>
+    <Animated.View style={[styles.wrapper,theme,{transform:[{translateY}]}]}>
       <TouchableNativeFeedback 
         onPress={back}
         background={TouchableNativeFeedback.Ripple('#666',true,20)}
         useForeground={TouchableNativeFeedback.canUseNativeForeground()}
       >
         <View style={{justifyContent:'center'}}>
-          <Feather name="arrow-left"  size={26} />
+          <Feather name="arrow-left"  size={26} style={theme}/>
         </View>
       </TouchableNativeFeedback>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={[styles.title,theme]}>{title}</Text>
       {/* <TouchableNativeFeedback 
         onPress={back}
         background={TouchableNativeFeedback.Ripple('#666',true,20)}

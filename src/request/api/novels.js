@@ -32,14 +32,14 @@ export function novelDetail(id,signal) {
     fetch(url,{method:'GET',signal})
     .then(res => res.text())
     .then(res => {
-      //只要章节
+      //需要章节,链接,index
       let results = [];
       let $ = Cheerio.load(res);
       let chapters = $('dl dd a');
       chapters.each((index,item) => {
         let href = item['attribs']['href'];
         let chapter = item['children'][0]['data'];
-        results.push({href,chapter});
+        results.push({href,chapter,index});
       })
       resolve(results);
     })
@@ -58,9 +58,10 @@ export function novelRead(href,signal) {
       // let content = $('#content');
       // let results = content.html().replace(/<br>/g, "\n");
       //直接把片段交给webview
-      let results = $('#content').html();
+      let results = $('#content').html().replace(/<br>/g, "\n");
+      results = results.replace(/&nbsp;/g, " ");
       resolve(results);
     })
-    .catch(err => console.log(err))
+    .catch(err => reject(err))
   })
 }

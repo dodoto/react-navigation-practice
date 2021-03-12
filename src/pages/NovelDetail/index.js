@@ -11,7 +11,7 @@ import { TestContext } from '../../context/TestContext';
 
 function renderItem({item}) {
   return (
-    <Chapter title={item.chapter} href={item.href}/>
+    <Chapter title={item.chapter} href={item.href} index={item.index}/>
   );
 }
 
