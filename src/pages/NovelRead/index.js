@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar, DeviceEventEmitter, Text, ScrollView, View, TouchableOpacity, StyleSheet } from 'react-native';
 // import { ScrollView as GesScrollView, PanGestureHandler } from 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -40,7 +40,7 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
 
   const [theme,setTheme] = useState('default');
 
-  const currentIndex = useRef(index);     //保存index,供后边修改
+  const [currentIndex,setCurrentIndex] = useState(index);     //保存index,供后边修改
 
   const { result, loading, setResult, abortController, setLoading } = useFetch(novelRead,[href]);
 
@@ -65,15 +65,12 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
   //   DeviceEventEmitter.emit('chapterTurn',{href,title,index:newIndex,hidde:true});
   // }
   const chapterTurn = (delta) => {
-    let oldIndex = currentIndex.current ;
-    if(oldIndex === 0 && delta === -1) return 
-    if(oldIndex === catalog.length - 1 && delta === 1) return
-    let newIndex = oldIndex + delta;
+    if(currentIndex === 0 && delta === -1) return 
+    if(currentIndex === catalog.length - 1 && delta === 1) return
+    let newIndex = currentIndex + delta;
     let href = catalog[newIndex]['href']
     let title = catalog[newIndex]['chapter']
-    currentIndex.current = newIndex;
     DeviceEventEmitter.emit('chapterTurn',{href,title,index:newIndex,hidde:true});
-
   };
 
   //读取本地主题 要在上一个页面读取完成
@@ -87,10 +84,10 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
   useEffect(()=>{
     let handler = ({href,title,index}) => {
       setLoading(true)
-      currentIndex.current = index;
       novelRead(href,abortController.current.signal)
       .then(res => {
         setResult(res);
+        setCurrentIndex(index);
         navigation.setParams({title});
       })
       .catch(err => console.log(err))
@@ -100,8 +97,8 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
     return () => DeviceEventEmitter.removeAllListeners('chapterTurn');
   },[])
 
-  const isFirst = currentIndex.current === 0;
-  const isLast = currentIndex.current === catalog.length - 1;
+  const isFirst = currentIndex === 0;
+  const isLast = currentIndex === catalog.length - 1;
   const themeStyle = themes[theme];
 
   return (
@@ -126,7 +123,7 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
         }
         {/* <FootMenu /> */}
         <Menu title={title} navigation={navigation}/>
-        <Catalog catalog={catalog} index={index} />
+        <Catalog catalog={catalog} currentIndex={currentIndex} />
       </>
     </TestContext.Provider>
   );

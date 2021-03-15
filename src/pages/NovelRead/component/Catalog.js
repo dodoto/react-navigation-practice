@@ -1,30 +1,14 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
-import {View, Text, StyleSheet, DeviceEventEmitter, BackHandler, FlatList } from 'react-native';
+import React, { memo, useEffect, useRef } from 'react';
+import { Text, StyleSheet, DeviceEventEmitter, BackHandler, FlatList } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useReadMenuAnima } from '../../../request/api/hook';
-import { TestContext } from '../../../context/TestContext';
 import { W } from '../../../util/const';
 import { keyExtractor } from '../../../util/fun';
 import CatalogItem from './CatalogItem';
 
 
-function renderItem(item,index) {
-  const isCurrent = index === item.index;
-  return (
-    <CatalogItem title={item.chapter} href={item.href} index={item.index} isCurrent={isCurrent}/>
-  );
-}
-
-function getItemLayout(data,index) {
-  return {
-    length: 40, offset: 40 * index, index
-  }
-}
-
-export default memo(function Catalog({catalog,index}) {
-
-  const [currentIndex,setCurrentIndex] = useState(index)         //当前章节
+export default memo(function Catalog({catalog,currentIndex}) {
 
   const catalogRef = useRef();                                   //flatlist实例 
 
@@ -39,6 +23,15 @@ export default memo(function Catalog({catalog,index}) {
   const dismiss = () => {
     DeviceEventEmitter.emit('callCatalog');
   }
+
+  const renderItem = ({item}) => {
+    const isCurrent = currentIndex === item.index;
+    return (
+      <CatalogItem title={item.chapter} href={item.href} index={item.index} isCurrent={isCurrent}/>
+    );
+  };
+
+  const getItemLayout = (data,index) => ({length: 40, offset: 40 * index, index});
 
   //监听安卓返回键
   useEffect(()=>{
@@ -57,7 +50,6 @@ export default memo(function Catalog({catalog,index}) {
   //监听换章,更新当前章节标题下标
   useEffect(()=>{
     let handler = ({index,hidde}) => {
-      setCurrentIndex(index);
       //如果是隐藏目录的时候换章
       if(hidde) catalogRef.current.scrollToIndex({animated:false,index});
     };
@@ -67,11 +59,13 @@ export default memo(function Catalog({catalog,index}) {
   
   //滚动到当前章节
   useEffect(()=>{
-    if(index > 0) catalogRef.current.scrollToIndex({animated:false,index});
+    if(currentIndex > 0) catalogRef.current.scrollToIndex({animated:false,index:currentIndex});
   },[])
 
   return (
-    <View style={[styles.wrapper]} pointerEvents="box-none">
+    <>
+      {/* 背景 */}
+      <Animated.View style={[styles.modal,{opacity}]} pointerEvents="box-none"></Animated.View>
       {/* 目录 */}
       <Animated.View style={[styles.catalogBox,{transform:[{translateX}]}]}>
         <Text style={styles.cancel} onPress={dismiss}></Text>
@@ -79,34 +73,28 @@ export default memo(function Catalog({catalog,index}) {
           ref={catalogRef}
           style={styles.catalog}
           data={catalog}
-          renderItem={({item}) => renderItem(item,currentIndex)}
+          renderItem={renderItem}
           keyExtractor={keyExtractor}
           getItemLayout={getItemLayout}
+          windowSize={3}
         />
       </Animated.View>
-      {/* 背景 */}
-      <Animated.View style={[styles.modal,{opacity}]} pointerEvents="box-none"></Animated.View>
-    </View> 
+    </> 
   );
 })
 
 const styles = StyleSheet.create({
-  wrapper: {
-    position: 'absolute',
-    top: 0, right: 0, bottom: 0, left: 0,
-    backgroundColor: 'transparent'
-  },
   modal: {
     position: 'absolute',
     top: 0, right: 0, bottom: 0, left: 0,
     backgroundColor: '#000',
-    zIndex: -1
   },
   cancel: {
     width: 100,
   },
   catalogBox: {
-    flex:1,
+    position: 'absolute',
+    top: 0, right: 0, bottom: 0, left: 0,
     flexDirection: 'row',
   },
   catalog: {

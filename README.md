@@ -1,5 +1,7 @@
-# lucky-draw 
-
+# 项目说明
+  这是一个 react-navigation 5.x, react-native-reanimated, react-native-gesture-handler的学习项目.
+  使用了react-native里android的api,所以只能打包成apk.
+  
 # 路由说明
   1. TVandMovie = TopTab路由
 
