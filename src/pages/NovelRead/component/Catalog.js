@@ -9,9 +9,10 @@ import { keyExtractor } from '../../../util/fun';
 import CatalogItem from './CatalogItem';
 
 
-function renderItem({item}) {
+function renderItem(item,index) {
+  const isCurrent = index === item.index;
   return (
-    <CatalogItem title={item.chapter} href={item.href} index={item.index}/>
+    <CatalogItem title={item.chapter} href={item.href} index={item.index} isCurrent={isCurrent}/>
   );
 }
 
@@ -70,24 +71,22 @@ export default memo(function Catalog({catalog,index}) {
   },[])
 
   return (
-    <TestContext.Provider value={{currentIndex}}>
-      <View style={[styles.wrapper]} pointerEvents="box-none">
-        {/* 目录 */}
-        <Animated.View style={[styles.catalogBox,{transform:[{translateX}]}]}>
-          <Text style={styles.cancel} onPress={dismiss}></Text>
-          <FlatList 
-            ref={catalogRef}
-            style={styles.catalog}
-            data={catalog}
-            renderItem={renderItem}
-            keyExtractor={keyExtractor}
-            getItemLayout={getItemLayout}
-          />
-        </Animated.View>
-        {/* 背景 */}
-        <Animated.View style={[styles.modal,{opacity}]} pointerEvents="box-none"></Animated.View>
-      </View>
-    </TestContext.Provider>  
+    <View style={[styles.wrapper]} pointerEvents="box-none">
+      {/* 目录 */}
+      <Animated.View style={[styles.catalogBox,{transform:[{translateX}]}]}>
+        <Text style={styles.cancel} onPress={dismiss}></Text>
+        <FlatList 
+          ref={catalogRef}
+          style={styles.catalog}
+          data={catalog}
+          renderItem={({item}) => renderItem(item,currentIndex)}
+          keyExtractor={keyExtractor}
+          getItemLayout={getItemLayout}
+        />
+      </Animated.View>
+      {/* 背景 */}
+      <Animated.View style={[styles.modal,{opacity}]} pointerEvents="box-none"></Animated.View>
+    </View> 
   );
 })
 

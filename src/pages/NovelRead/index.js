@@ -4,8 +4,7 @@ import { StatusBar, DeviceEventEmitter, Text, ScrollView, View, TouchableOpacity
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Loading from '../../components/Loading';
-import HeadMenu from './component/HeadMenu';
-import FootMenu from './component/FootMenu';
+import Menu from './component/Menu';
 import Catalog from './component/Catalog';
 import { useFetch } from '../../request/api/hook';
 import { novelRead } from '../../request/api/novels';
@@ -109,25 +108,24 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
     <TestContext.Provider value={{ theme: themes[theme], themeName: theme, setTheme }}>
       <>
         <StatusBar hidden/>
-        <HeadMenu title={title} navigation={navigation}/>
+        {/* <HeadMenu title={title} navigation={navigation}/> */}
         {
           loading ?
           <Loading />:
-          <View style={{flex:1}}>
-            <ScrollView style={themeStyle}>
-              <Text style={[styles.content,themeStyle]} onPress={callMenu}>{result}</Text>
-              <View style={styles.btnBox}>
-                <TouchableOpacity activeOpacity={0.5} onPress={()=>chapterTurn(-1)}>
-                  <Text style={[styles.btn,themeStyle,isFirst && styles.disable]}>上一章</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.5} onPress={()=>chapterTurn(1)}>
-                  <Text style={[styles.btn,themeStyle,isLast && styles.disable]}>下一章</Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
-          </View>
+          <ScrollView style={themeStyle}>
+            <Text style={[styles.content,themeStyle]} onPress={callMenu}>{result}</Text>
+            <View style={styles.btnBox}>
+              <TouchableOpacity activeOpacity={0.5} onPress={()=>chapterTurn(-1)}>
+                <Text style={[styles.btn,themeStyle,isFirst && styles.disable]}>上一章</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.5} onPress={()=>chapterTurn(1)}>
+                <Text style={[styles.btn,themeStyle,isLast && styles.disable]}>下一章</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         }
-        <FootMenu />
+        {/* <FootMenu /> */}
+        <Menu title={title} navigation={navigation}/>
         <Catalog catalog={catalog} index={index} />
       </>
     </TestContext.Provider>
