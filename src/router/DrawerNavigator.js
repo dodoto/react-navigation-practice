@@ -16,7 +16,7 @@ const Drawer = createDrawerNavigator();
 const commonOpts = {
   headerShown: true,
   headerTitleAlign: 'center',
-  headerTinTColor: '#505050'
+  headerTinTColor: '#505050',
 }
 
 export default function DrawerNavigator({navigation}) {

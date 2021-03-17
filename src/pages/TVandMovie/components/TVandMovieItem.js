@@ -1,5 +1,6 @@
 import React, { memo, useContext } from 'react';
 import { View, Image, Text, StyleSheet, TouchableNativeFeedback } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 import { W } from '../../../util/const';
 import { TestContext } from '../../../context/TestContext';
@@ -19,8 +20,12 @@ export default memo(function TVandMovieItem({imgUrl,title,cat,href}) {
       background={TouchableNativeFeedback.SelectableBackground()}
     >
       <View style={styles.box}>
-        <Image source={{uri:imgUrl}} style={styles.img}/>
-          <Text style={styles.title}>{title}</Text>
+        <FastImage 
+          style={styles.img}
+          resizeMode={FastImage.resizeMode.contain}
+          source={{uri:imgUrl,priority: FastImage.priority.normal,}} 
+        />
+        <Text style={styles.title}>{title}</Text>
         <Text style={styles.yellowLine}></Text>
         <Text style={styles.cat}>{cat}</Text>
         {/* <Text>{href}</Text> */}

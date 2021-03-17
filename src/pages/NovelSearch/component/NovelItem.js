@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { View, Text, TouchableNativeFeedback, Image } from 'react-native';
+import { View, Text, TouchableNativeFeedback } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 import { TestContext } from '../../../context/TestContext';
 
@@ -27,9 +28,10 @@ export default function NovelItem({title,id,author,imgUrl,descr}) {
           justifyContent: 'space-between'
         }}
       >
-        <Image
-          source={{uri:imgUrl}}
+        <FastImage
+          source={{uri:imgUrl,priority: FastImage.priority.normal}}
           style={{width:100,height:150}}
+          resizeMode={FastImage.resizeMode.contain}
         />
         <View style={{marginLeft:15,flex:1,maxHeight:150,overflow:'hidden'}}>
           <Text style={{color:'#303133',fontSize: 16}}>{title}</Text>

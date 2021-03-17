@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, View,Image, ScrollView, StyleSheet, Button } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, Button } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 import { useFetch } from '../../request/api/hook';
 import { getBookDetail } from '../../request/api/book';
@@ -22,7 +23,11 @@ export default function BookDetail({route,navigation}) {
       <ScrollView>
         <View style={[styles.section,styles.mb]}>
           <View style={{elevation:4}}>
-            <Image style={{width:120,height:180}} source={{uri:result.image}}/>
+            <FastImage 
+              style={{width:120,height:180}} 
+              source={{uri:result.image,priority: FastImage.priority.normal,}}
+              resizeMode={FastImage.resizeMode.contain}
+            />
           </View>
           <Text style={styles.title}>{result.title}</Text>
           <Text style={styles.author}>{result.author}</Text>

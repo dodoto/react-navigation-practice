@@ -1,5 +1,6 @@
 import React, { memo, useContext } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text,  StyleSheet, TouchableOpacity } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 import { TestContext } from '../context/TestContext';
 
@@ -12,9 +13,10 @@ export default memo(function BookItem({author,image,title,id,fav_nums}) {
   return (
     <TouchableOpacity onPress={toBookDetail} activeOpacity={.9}>
       <View style={styles.bookboard}>
-        <Image 
+        <FastImage 
           style={{width:120,height:180}}
-          source={{uri:image}}
+          source={{uri:image,priority: FastImage.priority.normal,}}
+          resizeMode={FastImage.resizeMode.contain}
         />
         <View style={styles.txt}>
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{title}</Text>

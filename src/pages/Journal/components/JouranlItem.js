@@ -1,15 +1,17 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
-const WIDTH = Dimensions.get('window').width;
+import { W } from '../../../util/const';
 
 export default function JournalItem({image,content,title}) {
   
   return (
     <View style={{flex:1}}>
-      <Image 
-        source={{uri:image}}
-        style={{width:WIDTH,height:WIDTH*0.66}}
+      <FastImage
+        source={{uri:image,priority: FastImage.priority.normal}}
+        style={{width:W,height:W*0.66}}
+        resizeMode={FastImage.resizeMode.cover}
       />
       <Text style={styles.content}>{content}</Text>
       <Text style={styles.title}>{title}</Text>

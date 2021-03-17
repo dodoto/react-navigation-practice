@@ -2,6 +2,7 @@ import React, { memo, useContext } from 'react';
 import { Text, StyleSheet, TouchableNativeFeedback, View, DeviceEventEmitter } from 'react-native';
 import Animated from 'react-native-reanimated';
 import Feather from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useReadMenuAnima } from '../../../request/api/hook';
 import { TestContext } from '../../../context/TestContext';
@@ -33,6 +34,12 @@ export default memo(function Menu({title,navigation}) {
     }
   }
 
+  const addToBookshelf = () => {
+
+  };
+
+
+
   const back = () => {
     navigation.goBack();
   };
@@ -50,15 +57,15 @@ export default memo(function Menu({title,navigation}) {
           </View>
         </TouchableNativeFeedback>
         <Text style={[styles.title,theme]}>{title}</Text>
-        {/* <TouchableNativeFeedback 
-          onPress={back}
+        <TouchableNativeFeedback 
+          // onPress={back}
           background={TouchableNativeFeedback.Ripple('#666',true,20)}
           useForeground={TouchableNativeFeedback.canUseNativeForeground()}
         >
-          <View style={{justifyContent:'center',position:'absolute',right:20,top:0,bottom:0}}>
-            <Feather name="bookmark"  size={24} />
+          <View style={{justifyContent:'center',position:'absolute',right:20,top:10,bottom:0}}>
+            <Feather name="bookmark"  size={26} />
           </View>
-        </TouchableNativeFeedback> */}
+        </TouchableNativeFeedback>
       </Animated.View>
 
       <Animated.View style={[styles.wrapper,styles.foot,theme,{transform:[{translateY:footTranslateY}]}]}>
@@ -111,6 +118,7 @@ const styles = StyleSheet.create({
     top: 0, 
     alignItems: 'center',
     paddingHorizontal: 20,
+    paddingTop: 10
   },
   title: {
     marginLeft: 20

@@ -4,7 +4,7 @@ import { FlatList, } from 'react-native';
 import { novelDetail } from '../../request/api/novels';
 import { useFetch } from '../../request/api/hook';
 import Loading from '../../components/Loading';
-import { keyExtractor } from '../../util/fun';
+import { keyExtractor, getItemLayout as layout } from '../../util/fun';
 import Chapter from './component/Chapter';
 import NovelPage from './component/NovelPage';
 import { TestContext } from '../../context/TestContext';
@@ -16,9 +16,7 @@ function renderItem({item}) {
 }
 
 function getItemLayout(data,index) {
-  return {
-    length: 50, offset: 50 * index, index
-  }
+  return layout(data,index,50);
 }
 
 export default function NovelDetail({ navigation, route: { params:{ id } } }) {

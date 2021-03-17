@@ -4,7 +4,7 @@ import Animated from 'react-native-reanimated';
 
 import { useReadMenuAnima } from '../../../request/api/hook';
 import { W } from '../../../util/const';
-import { keyExtractor } from '../../../util/fun';
+import { keyExtractor, getItemLayout as layout } from '../../../util/fun';
 import CatalogItem from './CatalogItem';
 
 
@@ -31,7 +31,7 @@ export default memo(function Catalog({catalog,currentIndex}) {
     );
   };
 
-  const getItemLayout = (data,index) => ({length: 40, offset: 40 * index, index});
+  const getItemLayout = (data,index) => layout(data,index,40);
 
   //监听安卓返回键
   useEffect(()=>{
@@ -76,7 +76,7 @@ export default memo(function Catalog({catalog,currentIndex}) {
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           getItemLayout={getItemLayout}
-          windowSize={3}
+          windowSize={10}
         />
       </Animated.View>
     </> 
