@@ -81,3 +81,12 @@ export function useReadMenuAnima(initValue,eventType) {
   return { translate, state }
 }
 
+//阅读页面 监听换章节 Hooks 封装
+
+export function useChapterTurn(callback) {
+  useEffect(()=>{
+    let listener = DeviceEventEmitter.addListener('chapterTurn',callback);
+    return () => listener.remove();
+  },[])
+}
+

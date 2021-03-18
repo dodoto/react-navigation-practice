@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef } from 'react';
 import { Text, StyleSheet, DeviceEventEmitter, BackHandler, FlatList } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { useReadMenuAnima } from '../../../request/api/hook';
+import { useChapterTurn, useReadMenuAnima } from '../../../request/api/hook';
 import { W } from '../../../util/const';
 import { keyExtractor, getItemLayout as layout } from '../../../util/fun';
 import CatalogItem from './CatalogItem';
@@ -33,6 +33,11 @@ export default memo(function Catalog({catalog,currentIndex}) {
 
   const getItemLayout = (data,index) => layout(data,index,40);
 
+  const chapterHandler = ({index,hidde}) => {
+    //如果是隐藏目录的时候换章
+    if(hidde) catalogRef.current.scrollToIndex({animated:false,index});
+  };
+
   //监听安卓返回键
   useEffect(()=>{
     let handler = () => {
@@ -48,14 +53,7 @@ export default memo(function Catalog({catalog,currentIndex}) {
   },[])
 
   //监听换章,更新当前章节标题下标
-  useEffect(()=>{
-    let handler = ({index,hidde}) => {
-      //如果是隐藏目录的时候换章
-      if(hidde) catalogRef.current.scrollToIndex({animated:false,index});
-    };
-    DeviceEventEmitter.addListener('chapterTurn',handler);
-    return () => DeviceEventEmitter.removeAllListeners('chapterTurn');
-  },[])
+  useChapterTurn(chapterHandler);
   
   //滚动到当前章节
   useEffect(()=>{

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StatusBar, DeviceEventEmitter, Text, ScrollView, View, TouchableOpacity, StyleSheet } from 'react-native';
 // import { ScrollView as GesScrollView, PanGestureHandler } from 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -6,17 +6,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../../components/Loading';
 import Menu from './component/Menu';
 import Catalog from './component/Catalog';
-import { useFetch } from '../../request/api/hook';
+import Setbar from './component/Setbar';
+import { useChapterTurn, useFetch } from '../../request/api/hook';
 import { novelRead } from '../../request/api/novels';
 import { TestContext } from '../../context/TestContext';
-
-
-// 0 UNDETERMINED
-// 1 FAILED
-// 2 BEGAN
-// 3 CANCELLED
-// 4 ACTIVE
-// 5 END
 
 //使用 DeviceEventEmitter 进行组件通讯
 
@@ -36,11 +29,15 @@ const themes = {
   }
 }
 
-export default function NovelRead({navigation,route:{params:{href,title,index,result:catalog}}}) {
+export default function NovelRead({navigation,route:{params:{href,title,index,result:catalog,id,bookName}}}) {
 
   const [theme,setTheme] = useState('default');
 
   const [currentIndex,setCurrentIndex] = useState(index);     //保存index,供后边修改
+
+  const [isAdded,setIsAdded] = useState(false);
+
+  const bookshelfRef = useRef([]);
 
   const { result, loading, setResult, abortController, setLoading } = useFetch(novelRead,[href]);
 
@@ -48,22 +45,6 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
     DeviceEventEmitter.emit('callMenu');
   }
 
-  //监听滚动 查看是否到底或者到顶判断 载入 下一章 或 上一章 如果页面内容小于容器内容不能滚动那么该方法就无法监听
-  // const scrollEndHandler = ({nativeEvent}) => {
-  //   let { contentOffset: { y }, contentSize: { height }, layoutMeasurement: { height: boxHeight }} = nativeEvent;
-  //   let delta = 0; 
-  //   let index = currentIndex.current;
-  //   if(index !== 0 && y === 0) delta = -1;   // prev
-  //   if(index !== (catalog.length - 1) && (height - y - boxHeight) < 4 ) delta = 1; //next
-  //   let newIndex = index + delta;
-  //   console.log('drag end',nativeEvent,index)
-  //   if(newIndex === index) return
-  //   let href = catalog[newIndex]['href']
-  //   let title = catalog[newIndex]['chapter']
-  //   // console.log(href,title);
-  //   currentIndex.current = newIndex;
-  //   DeviceEventEmitter.emit('chapterTurn',{href,title,index:newIndex,hidde:true});
-  // }
   const chapterTurn = (delta) => {
     if(currentIndex === 0 && delta === -1) return 
     if(currentIndex === catalog.length - 1 && delta === 1) return
@@ -73,29 +54,65 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
     DeviceEventEmitter.emit('chapterTurn',{href,title,index:newIndex,hidde:true});
   };
 
-  //读取本地主题 要在上一个页面读取完成
+  const chapterHandler = ({href,title,index}) => {
+    setLoading(true)
+    novelRead(href,abortController.current.signal)
+    .then(res => {
+      setResult(res);
+      setCurrentIndex(index);
+      navigation.setParams({title});
+    })
+    .catch(err => console.log(err))
+    .finally(() => setLoading(false))
+  };
+
+  //读取本地主题 和收藏列表 
   useEffect(()=>{
-    AsyncStorage.getItem('theme').then(res => {
-      if(res) setTheme(res)
+    AsyncStorage.multiGet(['theme','bookshelf'])
+    .then(res => {
+      let theme = res[0][1];
+      let bookshelf = res[1][1];
+      if(theme) setTheme(theme);
+      if(bookshelf) {
+        bookshelfRef.current = JSON.parse(bookshelf);
+        let index = bookshelfRef.current.findIndex((item) => item.id === id);
+        if(index >= 0) setIsAdded(true);
+      }
     })
   },[])
 
   //监听换章,更新内容,修改标题
+  useChapterTurn(chapterHandler);
+
+  //监听添加书柜
   useEffect(()=>{
-    let handler = ({href,title,index}) => {
-      setLoading(true)
-      novelRead(href,abortController.current.signal)
-      .then(res => {
-        setResult(res);
-        setCurrentIndex(index);
-        navigation.setParams({title});
+    let handler = () => {
+      let { href, chapter:title } = catalog[currentIndex];
+      if(isAdded) {
+        bookshelfRef.current = bookshelfRef.current.filter(item => item.id !== id);
+      }else{
+        bookshelfRef.current.unshift({href,title,id,index:currentIndex,bookName});  
+      }
+      let bookshelf = JSON.stringify(bookshelfRef.current);
+      AsyncStorage.setItem('bookshelf',bookshelf)
+      setIsAdded(!isAdded);
+    }
+    let listener = DeviceEventEmitter.addListener('callAddToBookshelf',handler);
+    return () => {
+      listener.remove();
+      bookshelfRef.current.forEach(item => {
+        if(item.id === id) {
+          let { href, chapter } = catalog[currentIndex];
+          item.title = chapter;
+          item.href = href;
+          item.index = currentIndex;
+        }
       })
-      .catch(err => console.log(err))
-      .finally(() => setLoading(false))
-    };
-    DeviceEventEmitter.addListener('chapterTurn',handler);
-    return () => DeviceEventEmitter.removeAllListeners('chapterTurn');
-  },[])
+      let bookshelf = JSON.stringify(bookshelfRef.current);
+      AsyncStorage.setItem('bookshelf',bookshelf);
+      DeviceEventEmitter.emit('callUpdateBookshelf');
+    }
+  },[currentIndex,isAdded])
 
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === catalog.length - 1;
@@ -122,7 +139,8 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
           </ScrollView>
         }
         {/* <FootMenu /> */}
-        <Menu title={title} navigation={navigation}/>
+        <Menu title={title} navigation={navigation} isAdded={isAdded}/>
+        <Setbar />
         <Catalog catalog={catalog} currentIndex={currentIndex} />
       </>
     </TestContext.Provider>

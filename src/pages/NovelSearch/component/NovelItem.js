@@ -2,15 +2,11 @@ import React, { useContext } from 'react';
 import { View, Text, TouchableNativeFeedback } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
-import { TestContext } from '../../../context/TestContext';
-
 // 1: 1.5
-export default function NovelItem({title,id,author,imgUrl,descr}) {
-
-  const { navigation } = useContext(TestContext);
+export default function NovelItem({title,id,author,imgUrl,descr,navigation}) {
 
   const toNovelDetail = () => {
-    navigation.navigate('NovelDetail',{id,title})
+    navigation.navigate('NovelDetail',{id,title,index:0})
   };
 
   return (

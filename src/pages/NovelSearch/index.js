@@ -15,12 +15,6 @@ import { TestContext } from '../../context/TestContext';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-function renderItem({item:{title,author,id,imgUrl,descr}}) {
-  return (
-    <NovelItem title={title} author={author} id={id} imgUrl={imgUrl} descr={descr}/>
-  );
-}
-
 export default function NovelSearch({navigation, route:{ params: { keyword } } }) {
 
   const scrollY = useValue(0);
@@ -36,6 +30,19 @@ export default function NovelSearch({navigation, route:{ params: { keyword } } }
   const close = () => {
     navigation.goBack();
   };
+
+  const renderItem = ({item:{title,author,id,imgUrl,descr}}) => {
+    return (
+      <NovelItem 
+        title={title} 
+        author={author} 
+        id={id} 
+        imgUrl={imgUrl} 
+        descr={descr} 
+        navigation={navigation}
+      />
+    );
+  }
 
   return (
     <TestContext.Provider value={{navigation}}>

@@ -22,7 +22,7 @@ export function novelSearch(query,signal) {
       })
       resolve(results);
     })
-    .catch(err => reject(err));
+    .catch(err => reject(err+''));
   })
 }
 

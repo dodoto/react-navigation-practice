@@ -1,6 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, TextInput, StyleSheet, Keyboard, ToastAndroid } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 
 import Bookshelf from './component/Bookshelf';
 
@@ -9,8 +8,6 @@ import Bookshelf from './component/Bookshelf';
 export default function Novels({navigation}) {
 
   const query = useRef();
-
-  const height = useRef();
 
   const search = () => {
     let keyword = query.current ? query.current.trim() : '';
@@ -28,10 +25,14 @@ export default function Novels({navigation}) {
     query.current = text;
   };
 
+  const toNovelDetail = (id,title,index) => {
+    navigation.navigate('NovelDetail',{id,title,index})
+  };
+
   return (
     <>
       <TextInput 
-        autoFocus
+        // autoFocus
         style={styles.input}
         returnKeyType="search"
         onSubmitEditing={search}
@@ -39,7 +40,7 @@ export default function Novels({navigation}) {
         placeholder="输入要搜索的小说名称"
       />
       <View style={{flex:1,position:'relative'}}>
-        <Bookshelf/>
+        <Bookshelf toNovelDetail={toNovelDetail}/>
       </View>
     </>
   );

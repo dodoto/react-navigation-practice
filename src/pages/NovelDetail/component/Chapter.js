@@ -1,14 +1,10 @@
-import React, { memo, useContext } from 'react';
+import React, { memo } from 'react';
 import { TouchableOpacity, Text } from 'react-native';
 
-import { TestContext } from '../../../context/TestContext';
-
-export default memo(function Chapter({title,href,index}) {
-
-  const { navigation, result } = useContext(TestContext);
+export default memo(function Chapter({title,href,index,result,navigation,id,bookName}) {
 
   const toNovelRead = () => {
-    navigation.navigate('NovelRead',{href,title,result,index})
+    navigation.navigate('NovelRead',{href,title,result,index,id,bookName})
   }
 
   return (

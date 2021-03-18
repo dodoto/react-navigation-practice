@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text, TouchableNativeFeedback, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Journal  from '../pages/Journal/index';

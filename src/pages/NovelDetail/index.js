@@ -7,19 +7,23 @@ import Loading from '../../components/Loading';
 import { keyExtractor, getItemLayout as layout } from '../../util/fun';
 import Chapter from './component/Chapter';
 import NovelPage from './component/NovelPage';
-import { TestContext } from '../../context/TestContext';
 
-function renderItem({item}) {
-  return (
-    <Chapter title={item.chapter} href={item.href} index={item.index}/>
-  );
-}
 
 function getItemLayout(data,index) {
   return layout(data,index,50);
 }
 
-export default function NovelDetail({ navigation, route: { params:{ id } } }) {
+function getOffset(index) {
+  let offset = 0;
+  if(index > 100) {
+    offset = (index - Math.floor(index/100) * 100) * 50
+  }else{
+    offset = index * 50
+  }
+  return offset;
+}
+
+export default function NovelDetail({ navigation, route: { params:{ id, title, index } } }) {
 
   //一页100条
   const [ page, setPage ] = useState(1);   
@@ -34,10 +38,31 @@ export default function NovelDetail({ navigation, route: { params:{ id } } }) {
     return result.slice((page-1) *100,page * 100);
   }
 
+  const renderItem = ({item}) => {
+    return (
+      <Chapter 
+        bookName={title}
+        title={item.chapter} 
+        href={item.href} 
+        index={item.index} 
+        result={result} 
+        id={id} 
+        navigation={navigation}
+      />
+    );
+  }
+      
   const pageChange = (page) => setPage(page);
 
   useEffect(()=>{
     if(result) {
+      let currentPage = Math.ceil(index/100);
+      if(currentPage === 0) currentPage = 1;
+      setPage(currentPage);
+      requestAnimationFrame(()=>{
+        let offset = getOffset(index);
+        list.current.scrollToOffset({offset,animated:false});
+      })
       let total = Math.ceil(result.length/100);
       pickers.current = [...Array(total).keys()].map(item => ({label:`第${item+1}页`,value:item+1}));
     }
@@ -46,11 +71,13 @@ export default function NovelDetail({ navigation, route: { params:{ id } } }) {
   useEffect(()=>{
     let flatlist = list.current;
     //第一次没有
-    if(flatlist)flatlist.scrollToOffset({offset:0,animated:false});
+    if(flatlist) {
+      flatlist.scrollToOffset({offset:0,animated:false});
+    }
   },[page]);
 
   return (
-    <TestContext.Provider value={{navigation,result}}>
+    <>
       {
         loading ?
         <Loading />:
@@ -63,6 +90,6 @@ export default function NovelDetail({ navigation, route: { params:{ id } } }) {
           ListFooterComponent={<NovelPage pickers={pickers} page={page} pageChange={pageChange}/>}
         />
       }
-    </TestContext.Provider>
+    </>  
   );
 }

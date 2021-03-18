@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, StyleSheet, DeviceEventEmitter, LayoutAnimation } from 'react-native';
 import { getDefaultHeaderHeight } from '@react-navigation/drawer/src/views/Header';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import { PanGestureHandler, State, ScrollView } from 'react-native-gesture-handler';
 import Animated, 
   { 
     useValue, 
@@ -10,28 +10,21 @@ import Animated,
     event, 
     eq, 
     set, 
-    add, 
-    or,
-    greaterOrEq, 
-    lessOrEq, 
+    add,  
     lessThan, 
-    greaterThan, 
-    block, 
-    max, 
-    min,  
     diffClamp,
-    and,
     timing,
     Easing,
     Value,
     Clock,
     clockRunning,
     stopClock,
-    startClock
+    startClock,
   } from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { H, W } from '../../../util/const';
+import ReadRecord from './ReadRecord';
 
 //时钟 初始值 最终值
 function runTiming( clock: Animated.Clock, value: Animated.Value<number>, dest: number ) {
@@ -43,14 +36,16 @@ function runTiming( clock: Animated.Clock, value: Animated.Value<number>, dest: 
   };
   const config = {
       toValue  : new Value(0),
-      duration : 300,
+      duration : 150,
       easing   : Easing.linear
   };
   
   return [
     cond(
       clockRunning(clock),
-      0,
+      [
+        set(config.toValue,dest)
+      ],
       [
         set(state.finished, 0),
         set(state.frameTime, 0),
@@ -70,7 +65,7 @@ function runTiming( clock: Animated.Clock, value: Animated.Value<number>, dest: 
 //每次手势都是从0开始
 const layout = { width: W, height: H };
 
-export default function Bookshelf() {
+export default function Bookshelf({toNovelDetail}) {
 
   const insets = useSafeAreaInsets();
 
@@ -86,42 +81,80 @@ export default function Bookshelf() {
 
   const clock = useRef(new Clock()).current;                    //一个 clock
 
+  const bookshelf = useRef();
+
+  const [books,setBooks] = useState([]);
+
+  const remove = (href) => {
+    let result = books.filter(item => item.href !== href);
+    AsyncStorage.setItem('bookshelf',JSON.stringify(result));
+    LayoutAnimation.spring();
+    setBooks(result);
+  }
+
   const handler = event(
     [{nativeEvent: {translationY: translateGsY, state }}],
   )
-  
+
+  const _translateY = diffClamp(
+    add(translateInitY,translateGsY),
+    0,
+    boxHeight - 50
+  )
+
   const translateY = cond(
-    eq(state, State.END),                                       //判断是否活跃
+    lessThan(state, State.ACTIVE),
+    translateInitY,
     cond(
-      greaterThan(add(translateInitY,translateGsY),(boxHeight-50)/2),
-      [
-        set(translateInitY,add(translateInitY,translateGsY)),
-        set(translateInitY,runTiming(clock,translateInitY,boxHeight-50))
-      ],
-      [
-        set(translateInitY,add(translateInitY,translateGsY)),
-        set(translateInitY,runTiming(clock,translateInitY,0))
-      ]
-    ),                           
-    diffClamp(
-      add(translateInitY,translateGsY),
-      0,
-      boxHeight - 50
+      eq(state,State.ACTIVE),
+      _translateY,
+      cond(
+        lessThan(_translateY,(boxHeight-50)/2),
+        [set(translateGsY,0),set(translateInitY,runTiming(clock,_translateY,0))],
+        [set(translateGsY,0),set(translateInitY,runTiming(clock,_translateY,boxHeight-50))]
+      )
     )
   )
+
+  useEffect(()=>{
+    let handler = () => {
+      AsyncStorage.getItem('bookshelf')
+      .then(res => {
+        if(res) setBooks(JSON.parse(res))
+      })
+      .catch(err => console.log(err))
+    }
+    handler();
+    let listener = DeviceEventEmitter.addListener('callUpdateBookshelf',handler);
+    return () => listener.remove();
+  },[])
 
   return (
     <PanGestureHandler
       onGestureEvent={handler}
       onHandlerStateChange={handler}
+      waitFor={bookshelf}
     >
     <Animated.View style={[styles.bookshelf,{transform:[{translateY}]}]}>
       <View style={styles.head}>
         <Text style={styles.title}>我的书架</Text>
       </View>
       
-      <ScrollView>
-        <Text style={{height:600}}>我是书架</Text>
+      <ScrollView ref={bookshelf} style={{marginVertical:10}}>
+       {
+         books.map(item => (
+          <ReadRecord 
+            remove={remove}
+            onPress={toNovelDetail}
+            key={item.href}
+            href={item.href}
+            bookName={item.bookName}
+            index={item.index}
+            title={item.title}
+            id={item.id}
+          />
+         ))
+       }
       </ScrollView>
     </Animated.View>
     </PanGestureHandler>
@@ -131,7 +164,6 @@ export default function Bookshelf() {
 const styles = StyleSheet.create({
   bookshelf: {
     position: 'absolute',
-    backgroundColor: 'yellow',
     left: 0, right: 0, bottom: 0,top: 0,
     // minHeight: HEIGHT
   },

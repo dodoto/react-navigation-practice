@@ -121,7 +121,13 @@
   "@react-navigation/native": "^5.9.0"
   "@react-navigation/stack": "^5.13.0"
   ```
+  目前使用定时器错开收起和动画
 
   4.
 
   ScrollView无法被指定高度,ScrollView需要指定高度才能正常工作,所以需要外面裹一层View或者flex:1,且不能有使用padding类样式
+
+  5.
+
+  使用react-native-gesture-handler, ScrollView 嵌套在 PanGestureHandler中时,会无法滚动.
+  需要使用库提供的 ScrollView ,设置 PanGestureHandler waitFor 属性为 滚动列表实例.
