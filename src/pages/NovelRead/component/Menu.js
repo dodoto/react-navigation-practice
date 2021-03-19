@@ -70,7 +70,7 @@ export default memo(function Menu({title,navigation,isAdded}) {
           <View style={{justifyContent:'center',position:'absolute',right:20,top:10,bottom:0}}>
             {
               isAdded ?
-              <FontAwesome name="bookmark" size={26} color="orange"/>:
+              <FontAwesome name="bookmark" size={26} color="#96c5e3"/>:
               <FontAwesome name="bookmark-o"  size={26} style={theme}/> 
             }
           </View>
@@ -95,8 +95,8 @@ export default memo(function Menu({title,navigation,isAdded}) {
           useForeground={TouchableNativeFeedback.canUseNativeForeground()}
         >
           <View style={{justifyContent:'center'}}>
-            <Feather name="settings"  size={22} style={theme}/>
-            <Text style={[styles.tip,theme]}>设置</Text>
+            <Text style={[theme,{fontSize:18}]}>Aa</Text>
+            <Text style={[styles.tip,theme]}>字体</Text>
           </View>
         </TouchableNativeFeedback>
         <TouchableNativeFeedback 
@@ -106,7 +106,7 @@ export default memo(function Menu({title,navigation,isAdded}) {
         >
           <View style={{justifyContent:'center'}}>
             <Feather name={themeName === 'default' ? "moon" : "sun"}  size={22} style={theme}/>
-            <Text style={[styles.tip,theme]}>夜间</Text>
+            <Text style={[styles.tip,theme]}>{themeName === 'default' ? "关灯" : "开灯"}</Text>
           </View>
         </TouchableNativeFeedback>
       </Animated.View>

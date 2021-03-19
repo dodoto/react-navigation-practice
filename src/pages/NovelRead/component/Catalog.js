@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef } from 'react';
 import { Text, StyleSheet, DeviceEventEmitter, BackHandler, FlatList } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { useChapterTurn, useReadMenuAnima } from '../../../request/api/hook';
+import { useBackHandler, useChapterTurn, useReadMenuAnima } from '../../../request/api/hook';
 import { W } from '../../../util/const';
 import { keyExtractor, getItemLayout as layout } from '../../../util/fun';
 import CatalogItem from './CatalogItem';
@@ -38,19 +38,17 @@ export default memo(function Catalog({catalog,currentIndex}) {
     if(hidde) catalogRef.current.scrollToIndex({animated:false,index});
   };
 
+  let backHandler = () => {
+    if(state.current) {
+      DeviceEventEmitter.emit('callCatalog');
+      return true
+    }else{
+      return false
+    }
+  };
+
   //监听安卓返回键
-  useEffect(()=>{
-    let handler = () => {
-      if(state.current) {
-        DeviceEventEmitter.emit('callCatalog');
-        return true
-      }else{
-        return false
-      }
-    };
-    BackHandler.addEventListener('hardwareBackPress',handler)
-    return () => BackHandler.removeEventListener('hardwareBackPress',handler)
-  },[])
+  useBackHandler(backHandler);
 
   //监听换章,更新当前章节标题下标
   useChapterTurn(chapterHandler);

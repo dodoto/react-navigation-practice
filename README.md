@@ -131,3 +131,8 @@
 
   使用react-native-gesture-handler, ScrollView 嵌套在 PanGestureHandler中时,会无法滚动.
   需要使用库提供的 ScrollView ,设置 PanGestureHandler waitFor 属性为 滚动列表实例.
+
+  6.
+
+  const AnimatedTextInput = Animated.createAnimatedComponent.
+  AnimatedTextInput在scaleX(0) 的情况下仍能被触摸focus到.

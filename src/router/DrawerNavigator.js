@@ -28,7 +28,7 @@ export default function DrawerNavigator({navigation}) {
         drawerType="slide"
         screenOptions={commonOpts}
         drawerStyle={{
-          width: '60%',
+          width: '60%'
         }}
         // drawerContent={DrawerContent}
       >

@@ -14,24 +14,35 @@ import { TestContext } from '../../context/TestContext';
 //使用 DeviceEventEmitter 进行组件通讯
 
 const colors = {
-  Black: '#222',
-  Asparagus: '#eee'
+  Default: '#dcecd2',
+  DefaultText: '#666',
+  Reverse: '#32373b',
+  ReverseText: '#999'
+}
+
+const fontSizes = {
+  s: 14,
+  m: 16,
+  l: 18,
+  xl: 20
 }
 
 const themes = {
   default: {
-    color: colors.Black,
-    backgroundColor: colors.Asparagus,
+    color: colors.DefaultText,
+    backgroundColor: colors.Default,
   },
   reverse: {
-    color: colors.Asparagus,
-    backgroundColor: colors.Black
+    color: colors.ReverseText,
+    backgroundColor: colors.Reverse
   }
 }
 
 export default function NovelRead({navigation,route:{params:{href,title,index,result:catalog,id,bookName}}}) {
 
   const [theme,setTheme] = useState('default');
+
+  const [size,setSize] = useState('s');
 
   const [currentIndex,setCurrentIndex] = useState(index);     //保存index,供后边修改
 
@@ -40,6 +51,11 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
   const bookshelfRef = useRef([]);
 
   const { result, loading, setResult, abortController, setLoading } = useFetch(novelRead,[href]);
+
+  const switchSize = (size) => {
+    AsyncStorage.setItem('fontSize',size);
+    setSize(size)
+  };
 
   const callMenu = () => {
     DeviceEventEmitter.emit('callMenu');
@@ -68,10 +84,12 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
 
   //读取本地主题 和收藏列表 
   useEffect(()=>{
-    AsyncStorage.multiGet(['theme','bookshelf'])
+    AsyncStorage.multiGet(['theme','bookshelf','fontSize'])
     .then(res => {
       let theme = res[0][1];
       let bookshelf = res[1][1];
+      let fontSize = res[2][1];
+      if(fontSize) setSize(fontSize);
       if(theme) setTheme(theme);
       if(bookshelf) {
         bookshelfRef.current = JSON.parse(bookshelf);
@@ -117,6 +135,7 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === catalog.length - 1;
   const themeStyle = themes[theme];
+  const fontSize = {fontSize:fontSizes[size]};
 
   return (
     <TestContext.Provider value={{ theme: themes[theme], themeName: theme, setTheme }}>
@@ -127,7 +146,7 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
           loading ?
           <Loading />:
           <ScrollView style={themeStyle}>
-            <Text style={[styles.content,themeStyle]} onPress={callMenu}>{result}</Text>
+            <Text style={[styles.content,themeStyle,fontSize]} onPress={callMenu}>{result}</Text>
             <View style={styles.btnBox}>
               <TouchableOpacity activeOpacity={0.5} onPress={()=>chapterTurn(-1)}>
                 <Text style={[styles.btn,themeStyle,isFirst && styles.disable]}>上一章</Text>
@@ -140,7 +159,7 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
         }
         {/* <FootMenu /> */}
         <Menu title={title} navigation={navigation} isAdded={isAdded}/>
-        <Setbar />
+        <Setbar size={size} onChange={switchSize}/>
         <Catalog catalog={catalog} currentIndex={currentIndex} />
       </>
     </TestContext.Provider>
@@ -150,7 +169,8 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
 const styles = StyleSheet.create({
   content: {
     fontSize:18,
-    margin:20
+    margin:20,
+    marginBottom: 0
   },
   btnBox: {
     flexDirection:'row',

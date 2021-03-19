@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { ToastAndroid, DeviceEventEmitter } from 'react-native';
+import { ToastAndroid, DeviceEventEmitter, BackHandler } from 'react-native';
 import Animated, { Easing, useValue } from 'react-native-reanimated';
 
 export function useFetch (requestFun,params=[],deps = []) {
@@ -87,6 +87,15 @@ export function useChapterTurn(callback) {
   useEffect(()=>{
     let listener = DeviceEventEmitter.addListener('chapterTurn',callback);
     return () => listener.remove();
+  },[])
+}
+
+//BackHandler Hook
+
+export function useBackHandler(callback) {
+  useEffect(()=>{
+    BackHandler.addEventListener('hardwareBackPress',callback);
+    return () => BackHandler.removeEventListener('hardwareBackPress',callback);
   },[])
 }
 
