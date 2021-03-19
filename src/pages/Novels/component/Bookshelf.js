@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, DeviceEventEmitter, LayoutAnimation } from 'react-native';
 import { getDefaultHeaderHeight } from '@react-navigation/drawer/src/views/Header';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { PanGestureHandler, State, ScrollView } from 'react-native-gesture-handler';
+import { PanGestureHandler, State, ScrollView, FlatList } from 'react-native-gesture-handler';
 import Animated, 
   { 
     useValue, 
@@ -24,6 +24,7 @@ import Animated,
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { H, W } from '../../../util/const';
+import { keyExtractor } from '../../../util/fun';
 import ReadRecord from './ReadRecord';
 
 //时钟 初始值 最终值
@@ -92,6 +93,20 @@ export default function Bookshelf({toNovelDetail}) {
     setBooks(result);
   }
 
+  const renderItem = ({item}) => {
+    return (
+      <ReadRecord 
+        remove={remove}
+        onPress={toNovelDetail}
+        href={item.href}
+        bookName={item.bookName}
+        index={item.index}
+        title={item.title}
+        id={item.id}
+      />
+    );
+  }
+
   const handler = event(
     [{nativeEvent: {translationY: translateGsY, state }}],
   )
@@ -140,10 +155,10 @@ export default function Bookshelf({toNovelDetail}) {
         <Text style={styles.title}>我的书架</Text>
       </View>
       
-      <ScrollView ref={bookshelf} style={{marginVertical:10}}>
+      {/* <ScrollView ref={bookshelf} style={{marginVertical:10}}>
        {
          books.map(item => (
-          <ReadRecord 
+                    <ReadRecord 
             remove={remove}
             onPress={toNovelDetail}
             key={item.href}
@@ -155,7 +170,15 @@ export default function Bookshelf({toNovelDetail}) {
           />
          ))
        }
-      </ScrollView>
+      </ScrollView> */}
+      <FlatList 
+        ref={bookshelf}
+        style={{marginVertical:10}}
+        data={books}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        ListEmptyComponent={<Text style={styles.empty}>目前没有再追的书 (。・_・。)ﾉ </Text>}
+      />
     </Animated.View>
     </PanGestureHandler>
   );
@@ -179,6 +202,11 @@ const styles = StyleSheet.create({
     left: 0, right: 0, bottom: -5,
     textAlign: 'center',
     backgroundColor: '#fff'
+  },
+  empty: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#909399'
   }
 });
 

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { TouchableHighlight, Alert, Text, StyleSheet } from 'react-native';
 
-export default function ReadRecord({id,bookName,title,index,onPress,href,remove}) {
+export default memo(function ReadRecord({id,bookName,title,index,onPress,href,remove}) {
 
   const handler = () => {
     onPress(id,bookName,index)
@@ -43,7 +43,7 @@ export default function ReadRecord({id,bookName,title,index,onPress,href,remove}
       </>
     </TouchableHighlight>
   );
-}
+})
 
 const styles = StyleSheet.create({
   card: {

@@ -1,5 +1,5 @@
 export function keyExtractor(item,index) {
-  return item.id+''+index
+  return item.id + '' + index
 }
 
 export function getItemLayout(data,index,height,separatorHeight = 0) {
