@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
-import { TouchableHighlight, Alert, Text, StyleSheet } from 'react-native';
+import { Alert, Text, StyleSheet } from 'react-native';
+import { TouchableHighlight } from 'react-native-gesture-handler';
 
 export default memo(function ReadRecord({id,bookName,title,index,onPress,href,remove}) {
 
@@ -8,6 +9,7 @@ export default memo(function ReadRecord({id,bookName,title,index,onPress,href,re
   }
 
   const removeHandler = () => {
+    console.log(href)
     remove(href)
   }
 
@@ -31,17 +33,17 @@ export default memo(function ReadRecord({id,bookName,title,index,onPress,href,re
   }
 
   return (
-    <TouchableHighlight 
-      onPress={handler} 
-      underlayColor="#E4E7ED" 
-      style={styles.card}
-      onLongPress={removeTip}
-    >
-      <>
-        <Text style={styles.bookName}>{bookName}</Text>
-        <Text style={styles.record}>阅读至{title}</Text>
-      </>
-    </TouchableHighlight>
+      <TouchableHighlight 
+        onPress={handler} 
+        underlayColor="#E4E7ED" 
+        style={styles.card}
+        onLongPress={removeTip}
+      >
+        <>
+          <Text style={styles.bookName}>{bookName}</Text>
+          <Text style={styles.record}>阅读至{title}</Text>
+        </>
+      </TouchableHighlight>
   );
 })
 
@@ -58,5 +60,5 @@ const styles = StyleSheet.create({
   },
   record: {
     color: '#a0a4aa'
-  }
+  },
 });

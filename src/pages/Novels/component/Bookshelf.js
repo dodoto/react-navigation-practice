@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, DeviceEventEmitter, LayoutAnimation } from 'react-native';
 import { getDefaultHeaderHeight } from '@react-navigation/drawer/src/views/Header';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { PanGestureHandler, State, ScrollView, FlatList } from 'react-native-gesture-handler';
+import { PanGestureHandler, State, FlatList } from 'react-native-gesture-handler';
 import Animated, 
   { 
     useValue, 
@@ -13,54 +13,16 @@ import Animated,
     add,  
     lessThan, 
     diffClamp,
-    timing,
-    Easing,
-    Value,
     Clock,
-    clockRunning,
-    stopClock,
-    startClock,
   } from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { H, W } from '../../../util/const';
 import { keyExtractor } from '../../../util/fun';
+import { runTiming } from '../../../util/animation';
 import ReadRecord from './ReadRecord';
 
-//时钟 初始值 最终值
-function runTiming( clock: Animated.Clock, value: Animated.Value<number>, dest: number ) {
-  const state = {
-      finished  : new Value(0),
-      position  : new Value(0),
-      frameTime : new Value(0),
-      time      : new Value(0)
-  };
-  const config = {
-      toValue  : new Value(0),
-      duration : 150,
-      easing   : Easing.linear
-  };
-  
-  return [
-    cond(
-      clockRunning(clock),
-      [
-        set(config.toValue,dest)
-      ],
-      [
-        set(state.finished, 0),
-        set(state.frameTime, 0),
-        set(state.time, 0),
-        set(state.position, value),
-        set(config.toValue, dest),
-        startClock(clock)
-      ]
-    ),
-    timing(clock, state, config),
-    cond(state.finished, stopClock(clock)),
-    state.position
-  ]
-};
+
 // input 90
 //translateY max = boxHeight - 50, min = 0
 //每次手势都是从0开始
@@ -154,29 +116,13 @@ export default function Bookshelf({toNovelDetail}) {
       <View style={styles.head}>
         <Text style={styles.title}>我的书架</Text>
       </View>
-      
-      {/* <ScrollView ref={bookshelf} style={{marginVertical:10}}>
-       {
-         books.map(item => (
-                    <ReadRecord 
-            remove={remove}
-            onPress={toNovelDetail}
-            key={item.href}
-            href={item.href}
-            bookName={item.bookName}
-            index={item.index}
-            title={item.title}
-            id={item.id}
-          />
-         ))
-       }
-      </ScrollView> */}
       <FlatList 
         ref={bookshelf}
         style={{marginVertical:10}}
         data={books}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
+        shouldCancelWhenOutside
         ListEmptyComponent={<Text style={styles.empty}>目前没有再追的书 (。・_・。)ﾉ </Text>}
       />
     </Animated.View>
