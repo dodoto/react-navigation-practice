@@ -1,5 +1,5 @@
-import React, { memo, useContext } from 'react';
-import { Text, StyleSheet, TouchableNativeFeedback, View, DeviceEventEmitter } from 'react-native';
+import React, { memo, useContext, useEffect } from 'react';
+import { Text, StyleSheet, TouchableNativeFeedback, View, DeviceEventEmitter, StatusBar } from 'react-native';
 import Animated, { Easing, useValue } from 'react-native-reanimated';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -12,11 +12,11 @@ export default memo(function Menu({title,navigation,isAdded}) {
 
   const { theme, setTheme, themeName } = useContext(TestContext);
 
-  const { translate:headTranslateY } = useReadMenuAnima(-60,'callMenu');
+  const { translate:headTranslateY } = useReadMenuAnima(-70,'callMenu');
 
   const footTranslateY = headTranslateY.interpolate({
-    inputRange: [-60,0],
-    outputRange: [60,0],
+    inputRange: [-70,0],
+    outputRange: [70,0],
     extrapolate: 'clamp'
   })
 
@@ -48,6 +48,37 @@ export default memo(function Menu({title,navigation,isAdded}) {
   const back = () => {
     navigation.goBack();
   };
+
+  useEffect(()=>{
+    StatusBar.setHidden(true);
+    let current = 0;
+    const statusHandler = DeviceEventEmitter.addListener('callMenu',()=>{
+      if(current === 0) {
+        StatusBar.setHidden(false);
+        current = 1;
+      }else{
+        StatusBar.setHidden(true);
+        current = 0;
+      } 
+    })  
+    return () => {
+      statusHandler.remove();
+      StatusBar.setHidden(false);
+    }
+  },[])
+
+  //根据主题设置statusbar 字体色
+  useEffect(()=>{
+    if(themeName === 'default') {
+      StatusBar.setBarStyle('dark-content');
+    }else{
+      StatusBar.setBarStyle('light-content');
+    }
+  },[themeName])
+  //退出当前页面后
+  useEffect(()=>{
+    return () => StatusBar.setBarStyle('dark-content')
+  },[])
 
   return (
     <>
@@ -121,7 +152,7 @@ const styles = StyleSheet.create({
     left: 0, right: 0,
     flexDirection: 'row',
     elevation: 2,
-    height: 60,
+    height: 65,
   },
   head: {
     top: 0, 

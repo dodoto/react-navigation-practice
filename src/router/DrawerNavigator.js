@@ -18,7 +18,7 @@ const commonOpts = {
   headerTinTColor: '#505050',
 }
 
-export default function DrawerNavigator({navigation}) {
+export default function DrawerNavigator({navigation,route}) {
 
   return (
     <TestContext.Provider value={{navigation}}>

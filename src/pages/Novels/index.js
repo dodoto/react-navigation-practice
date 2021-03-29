@@ -1,5 +1,6 @@
+import { useFocusEffect } from '@react-navigation/core';
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, Keyboard, ToastAndroid } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Keyboard, ToastAndroid, StatusBar } from 'react-native';
 
 import Bookshelf from './component/Bookshelf';
 
@@ -28,6 +29,10 @@ export default function Novels({navigation}) {
   const toNovelDetail = (id,title,index) => {
     navigation.navigate('NovelDetail',{id,title,index})
   };
+
+  useFocusEffect(()=>{
+    StatusBar.setBarStyle('dark-content')
+  })
 
   return (
     <>

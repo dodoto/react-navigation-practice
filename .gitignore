@@ -57,3 +57,5 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+android/replay_pid6940.log
+android/hs_err_pid6940.log

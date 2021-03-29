@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, StatusBar } from 'react-native';
 
 import { useFetch } from '../../request/api/hook';
 import { getBooks } from '../../request/api/book';
@@ -7,12 +7,17 @@ import BookList from '../../components/BookList';
 import Loading from '../../components/Loading';
 
 import { TestContext } from '../../context/TestContext';
+import { useFocusEffect } from '@react-navigation/core';
 
 export default function Book({navigation,route}) {
 
   const {result,loading} = useFetch(getBooks);
 
   const toSearch = () => navigation.navigate('BookSearch');
+
+  useFocusEffect(()=>{
+    StatusBar.setBarStyle('dark-content')
+  })
 
   return (
     <TestContext.Provider value={{navigation}}>

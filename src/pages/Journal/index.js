@@ -1,6 +1,6 @@
 import React from 'react';
-import { FlatList } from 'react-native';
-
+import { FlatList, StatusBar } from 'react-native';
+import { useFocusEffect } from '@react-navigation/core';
 
 import Loading from '../../components/Loading';
 import JournalItem from './components/JouranlItem';
@@ -21,6 +21,10 @@ function renderJournalItem({item}) {
 export default function Journal() {
 
   let { result, loading } = useFetch(getAllJournal);
+
+  useFocusEffect(()=>{
+    StatusBar.setBarStyle('dark-content')
+  })
 
   if(loading) {
     return <Loading />

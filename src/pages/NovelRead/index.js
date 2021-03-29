@@ -140,7 +140,6 @@ export default function NovelRead({navigation,route:{params:{href,title,index,re
   return (
     <TestContext.Provider value={{ theme: themes[theme], themeName: theme, setTheme }}>
       <>
-        <StatusBar hidden/>
         {/* <HeadMenu title={title} navigation={navigation}/> */}
         {
           loading ?

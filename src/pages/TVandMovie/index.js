@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { FlatList } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { FlatList, StatusBar } from 'react-native';
 
 import Loading from '../../components/Loading';
 import TVandMovieItem from './components/TVandMovieItem';
@@ -8,6 +8,7 @@ import { keyExtractor } from '../../util/fun';
 import { useFetch } from '../../request/api/hook';
 import { getTvAndMoVieList } from '../../request/api/tv&movie';
 import { TestContext } from '../../context/TestContext';
+import { useFocusEffect } from '@react-navigation/core';
 
 //图片宽高比 1 : 1.5
 
@@ -19,6 +20,16 @@ function renderTVandMovieItem({item:{imgUrl,title,cat,href}}) {
 
 
 export default function TVandMovie({route,navigation}) {
+  
+  useFocusEffect(()=>{
+    StatusBar.setBarStyle('light-content')
+  })
+
+  useEffect(()=>{
+    StatusBar.setTranslucent(true);
+    StatusBar.setBackgroundColor('transparent');
+    StatusBar.setBarStyle('light-content');  
+  },[]);
 
   const pageNo = useRef(1);
 
