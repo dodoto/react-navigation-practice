@@ -22,14 +22,10 @@ function renderTVandMovieItem({item:{imgUrl,title,cat,href}}) {
 export default function TVandMovie({route,navigation}) {
   
   useFocusEffect(()=>{
-    StatusBar.setBarStyle('light-content')
-  })
-
-  useEffect(()=>{
     StatusBar.setTranslucent(true);
     StatusBar.setBackgroundColor('transparent');
-    StatusBar.setBarStyle('light-content');  
-  },[]);
+    StatusBar.setBarStyle('light-content')
+  })
 
   const pageNo = useRef(1);
 

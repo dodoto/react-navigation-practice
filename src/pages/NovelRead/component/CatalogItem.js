@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { TouchableHighlight, Text, StyleSheet, DeviceEventEmitter } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, DeviceEventEmitter } from 'react-native';
 
 export default memo(function CatalogItem({href,title,index,isCurrent}) {
 
@@ -13,13 +13,13 @@ export default memo(function CatalogItem({href,title,index,isCurrent}) {
   };
   // console.log('render',index);
   return (
-    <TouchableHighlight onPress={toReadOtherChapter} underlayColor="#DCDFE6">
+    <TouchableOpacity onPress={toReadOtherChapter} activeOpacity={.5}>
       <Text 
         style={[styles.title,isCurrent && styles.current]}
       >
         {title}
       </Text>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 })
 

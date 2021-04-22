@@ -1,6 +1,7 @@
 import React, { memo, useContext, useEffect } from 'react';
 import { Text, StyleSheet, View, DeviceEventEmitter, BackHandler, TouchableHighlight } from 'react-native';
 import Animated from 'react-native-reanimated';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { TestContext } from '../../../context/TestContext';
 import { useBackHandler, useReadMenuAnima } from '../../../request/api/hook';
@@ -16,13 +17,10 @@ export default memo(function Setbar({size,onChange}) {
     DeviceEventEmitter.emit('callSetbar');
   }
 
-  const small = () => onChange('s');
-
-  const medium = () => onChange('m');
-
-  const large = () => onChange('l');
-
-  const xlarge = () => onChange('xl');
+  const set = size => {
+    onChange(size)
+    AsyncStorage.setItem('fontSize',size)
+  }
 
   //监听安卓返回键
   const backHandler = () => {
@@ -39,16 +37,16 @@ export default memo(function Setbar({size,onChange}) {
     <Animated.View style={[styles.wrapper,{transform:[{translateY}]}]}>
       <Text style={{flex:1}} onPress={dismiss}></Text>
       <View style={[styles.setbar,theme]}>
-        <TouchableHighlight onPress={small}  underlayColor="#96c5e3" style={styles.center}>
+        <TouchableHighlight onPress={() => set('s')}  underlayColor="#96c5e3" style={styles.center}>
           <Text style={[theme,styles.s,styles.center,size === 's' && styles.checked]} >小</Text>
         </TouchableHighlight>
-        <TouchableHighlight onPress={medium} underlayColor="#96c5e3" style={styles.center}>
+        <TouchableHighlight onPress={() => set('m')} underlayColor="#96c5e3" style={styles.center}>
           <Text style={[theme,styles.m,styles.center,size === 'm' && styles.checked]} >中</Text>
         </TouchableHighlight>
-        <TouchableHighlight onPress={large} underlayColor="#96c5e3" style={styles.center}>
+        <TouchableHighlight onPress={() => set('l')} underlayColor="#96c5e3" style={styles.center}>
           <Text style={[theme,styles.l,styles.center,size === 'l' && styles.checked]} >大</Text>
         </TouchableHighlight>
-        <TouchableHighlight onPress={xlarge} underlayColor="#96c5e3" style={styles.center}>
+        <TouchableHighlight onPress={() => set('xl')} underlayColor="#96c5e3" style={styles.center}>
           <Text style={[theme,styles.xl,styles.center,size === 'xl' && styles.checked]} >超大</Text>
         </TouchableHighlight>
       </View>

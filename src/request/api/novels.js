@@ -16,7 +16,8 @@ export function novelSearch(query,signal) {
       imgs.each((index,item) => {
         let imgUrl = item['attribs']['src'];
         let { href:id, title } = titles[index]['attribs'];
-        let descr = descrs[index]['children'][0]['data'];
+        let descr;
+        if(descrs) descr = descrs[index]['children'][0]['data'];
         let author = authors[index]['children'][0]['data'];
         results.push({imgUrl,id,title,descr,author});
       })

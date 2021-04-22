@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef, useContext } from 'react';
 import { Text, StyleSheet, DeviceEventEmitter, BackHandler, FlatList } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -6,11 +6,13 @@ import { useBackHandler, useChapterTurn, useReadMenuAnima } from '../../../reque
 import { W } from '../../../util/const';
 import { keyExtractor, getItemLayout as layout } from '../../../util/fun';
 import CatalogItem from './CatalogItem';
-
+import { TestContext } from '../../../context/TestContext';
 
 export default memo(function Catalog({catalog,currentIndex}) {
 
   const catalogRef = useRef();                                   //flatlist实例 
+
+  const { theme } = useContext(TestContext);
 
   const { translate:translateX, state } = useReadMenuAnima(W,'callCatalog');
 
@@ -67,7 +69,7 @@ export default memo(function Catalog({catalog,currentIndex}) {
         <Text style={styles.cancel} onPress={dismiss}></Text>
         <FlatList 
           ref={catalogRef}
-          style={styles.catalog}
+          style={theme}
           data={catalog}
           renderItem={renderItem}
           keyExtractor={keyExtractor}

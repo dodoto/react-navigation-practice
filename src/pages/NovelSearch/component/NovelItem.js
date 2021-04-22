@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, Text, TouchableNativeFeedback } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
@@ -6,7 +6,7 @@ import FastImage from 'react-native-fast-image';
 export default function NovelItem({title,id,author,imgUrl,descr,navigation}) {
 
   const toNovelDetail = () => {
-    navigation.navigate('NovelDetail',{id,title,index:0})
+    navigation.navigate('NovelDetail',{author,imgUrl,descr,id,title,index:0})
   };
 
   return (
@@ -20,7 +20,7 @@ export default function NovelItem({title,id,author,imgUrl,descr,navigation}) {
           flexDirection:'row',
           borderBottomColor:'#E4E7ED',
           borderBottomWidth:0.33,
-          padding: 15,
+          padding: 10,
           justifyContent: 'space-between'
         }}
       >
@@ -29,10 +29,10 @@ export default function NovelItem({title,id,author,imgUrl,descr,navigation}) {
           style={{width:100,height:150}}
           resizeMode={FastImage.resizeMode.contain}
         />
-        <View style={{marginLeft:15,flex:1,maxHeight:150,overflow:'hidden'}}>
+        <View style={{paddingLeft:10,paddingVertical:10,flex:1,overflow:'hidden'}}>
           <Text style={{color:'#303133',fontSize: 16}}>{title}</Text>
           <Text style={{color:'#909399',marginVertical:5}}>{author}</Text>
-          <Text style={{color:'#606266'}} ellipsizeMode="tail" numberOfLines={6}>{descr}</Text>
+          <Text style={{color:'#606266'}} ellipsizeMode="tail" numberOfLines={5}>{descr}</Text>
         </View>
       </View>
     </TouchableNativeFeedback>

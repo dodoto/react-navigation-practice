@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, DeviceEventEmitter, LayoutAnimation } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { getDefaultHeaderHeight } from '@react-navigation/drawer/src/views/Header';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PanGestureHandler, State, FlatList } from 'react-native-gesture-handler';
@@ -16,19 +16,23 @@ import Animated,
     Clock,
   } from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { connect } from 'react-redux';
 
 import { H, W } from '../../../util/const';
 import { keyExtractor } from '../../../util/fun';
 import { runTiming } from '../../../util/animation';
 import ReadRecord from './ReadRecord';
-
+import { setNovels, removeNovel } from '../../../store/module/novel/novelActionCreators';
+import { setFontSize, setTheme } from '../../../store/module/readerStyle/readerStyleActionCreators';
 
 // input 90
 //translateY max = boxHeight - 50, min = 0
 //每次手势都是从0开始
 const layout = { width: W, height: H };
 
-export default function Bookshelf({toNovelDetail}) {
+function Bookshelf({toNovelDetail,initBookshelf,remove,novels,initFontSize,initTheme}) {
+
+  const isFirst = useRef(true);
 
   const insets = useSafeAreaInsets();
 
@@ -46,25 +50,24 @@ export default function Bookshelf({toNovelDetail}) {
 
   const bookshelf = useRef();
 
-  const [books,setBooks] = useState([]);
-
-  const remove = (href) => {
-    let result = books.filter(item => item.href !== href);
-    AsyncStorage.setItem('bookshelf',JSON.stringify(result));
-    LayoutAnimation.spring();
-    setBooks(result);
+  const removeItem = (id) => {
+    remove(id)
   }
 
   const renderItem = ({item}) => {
+    const {author, imgUrl, descr, id, title, index, bookName, href} = item;
     return (
       <ReadRecord 
-        remove={remove}
+        remove={removeItem}
         onPress={toNovelDetail}
-        href={item.href}
-        bookName={item.bookName}
-        index={item.index}
-        title={item.title}
-        id={item.id}
+        author={author}
+        imgUrl={imgUrl}
+        descr={descr}
+        id={id}
+        title={title}
+        index={index}
+        bookName={bookName}
+        href={href}
       />
     );
   }
@@ -93,18 +96,26 @@ export default function Bookshelf({toNovelDetail}) {
     )
   )
 
+  //读取本地主题 和收藏列表 
   useEffect(()=>{
-    let handler = () => {
-      AsyncStorage.getItem('bookshelf')
-      .then(res => {
-        if(res) setBooks(JSON.parse(res))
-      })
-      .catch(err => console.log(err))
-    }
-    handler();
-    let listener = DeviceEventEmitter.addListener('callUpdateBookshelf',handler);
-    return () => listener.remove();
+    AsyncStorage.multiGet(['theme','bookshelf','fontSize'])
+    .then(res => {
+      let theme = res[0][1];
+      let bookshelf = res[1][1];
+      let fontSize = res[2][1];
+      if(theme) initTheme(theme);
+      if(bookshelf) initBookshelf(JSON.parse(bookshelf));
+      if(fontSize) initFontSize(fontSize);
+    })
   },[])
+
+  useEffect(() => {
+    if(isFirst.current) {
+      isFirst.current = false
+    }else{
+      AsyncStorage.setItem('bookshelf',JSON.stringify(novels));
+    }
+  },[novels])
 
   return (
     <PanGestureHandler
@@ -119,7 +130,7 @@ export default function Bookshelf({toNovelDetail}) {
       <FlatList 
         ref={bookshelf}
         style={{marginVertical:10}}
-        data={books}
+        data={novels}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         shouldCancelWhenOutside
@@ -155,4 +166,25 @@ const styles = StyleSheet.create({
     color: '#909399'
   }
 });
+
+const mapState = state => ({
+  novels: state['novelModule']
+});
+
+const mapDispatch = dispatch => ({
+  initBookshelf(novels) {
+    dispatch(setNovels(novels))
+  },
+  remove(id) {
+    dispatch(removeNovel(id))
+  },
+  initTheme(theme) {
+    dispatch(setTheme(theme))
+  },
+  initFontSize(size) {
+    dispatch(setFontSize(size))
+  }
+});
+
+export default connect(mapState, mapDispatch)(Bookshelf)
 

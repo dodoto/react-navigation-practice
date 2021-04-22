@@ -4,7 +4,7 @@ import { View, Text, TextInput, StyleSheet, Keyboard, ToastAndroid, StatusBar } 
 
 import Bookshelf from './component/Bookshelf';
 
-// 小说搜索页 => 小说搜索结果页(ok) => 小说向企业(分页目录)(ok) => 小说阅读页
+// 小说搜索页 => 小说搜索结果页(ok) => 小说详情页(分页目录)(ok) => 小说阅读页
 
 export default function Novels({navigation}) {
 
@@ -26,8 +26,8 @@ export default function Novels({navigation}) {
     query.current = text;
   };
 
-  const toNovelDetail = (id,title,index) => {
-    navigation.navigate('NovelDetail',{id,title,index})
+  const toNovelDetail = (id,title,index,author,imgUrl,descr) => {
+    navigation.navigate('NovelDetail',{id,title,index,author,imgUrl,descr})
   };
 
   useFocusEffect(()=>{

@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useReadMenuAnima } from '../../../request/api/hook';
 import { TestContext } from '../../../context/TestContext';
 
-export default memo(function Menu({title,navigation,isAdded}) {
+export default memo(function Menu({title,back,isAdded,collect,cancel}) {
 
   const { theme, setTheme, themeName } = useContext(TestContext);
 
@@ -31,6 +31,14 @@ export default memo(function Menu({title,navigation,isAdded}) {
     DeviceEventEmitter.emit('callSetbar')
   }
 
+  const changeAddState = () => {
+    if(isAdded) {
+      cancel()
+    }else{
+      collect()
+    }
+  }
+
   const changeTheme = () => {
     if(themeName === 'default') {
       setTheme('reverse')
@@ -40,14 +48,6 @@ export default memo(function Menu({title,navigation,isAdded}) {
       setTheme('default')
     }
   }
-
-  const addToBookshelf = () => {
-    DeviceEventEmitter.emit('callAddToBookshelf')
-  };
-
-  const back = () => {
-    navigation.goBack();
-  };
 
   useEffect(()=>{
     StatusBar.setHidden(true);
@@ -94,7 +94,7 @@ export default memo(function Menu({title,navigation,isAdded}) {
         </TouchableNativeFeedback>
         <Text style={[styles.title,theme]}>{title}</Text>
         <TouchableNativeFeedback 
-          onPress={addToBookshelf}
+          onPress={changeAddState}
           background={TouchableNativeFeedback.Ripple('#666',true,20)}
           useForeground={TouchableNativeFeedback.canUseNativeForeground()}
         >
