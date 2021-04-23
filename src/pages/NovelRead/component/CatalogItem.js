@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
 import { TouchableOpacity, Text, StyleSheet, DeviceEventEmitter } from 'react-native';
 
-export default memo(function CatalogItem({href,title,index,isCurrent}) {
+export default memo(function CatalogItem({href,title,index,isCurrent,change}) {
 
   const toReadOtherChapter = () => {
     if(!isCurrent) {
       DeviceEventEmitter.emit('callCatalog'); //关闭
-      requestAnimationFrame(()=>{
-        DeviceEventEmitter.emit('chapterTurn',{href,title,index,hidde:false}); //换章
-      });
+      requestAnimationFrame(() => {
+        change(index,title,href)
+      })
     }
   };
   // console.log('render',index);

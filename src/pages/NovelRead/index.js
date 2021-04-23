@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { DeviceEventEmitter, Text, ScrollView, View, TouchableOpacity, StyleSheet } from 'react-native';
 // import { ScrollView as GesScrollView, PanGestureHandler } from 'react-native-gesture-handler'
 
@@ -8,7 +8,7 @@ import Loading from '../../components/Loading';
 import Menu from './component/Menu';
 import Catalog from './component/Catalog';
 import Setbar from './component/Setbar';
-import { useChapterTurn, useFetch } from '../../request/api/hook';
+import { useFetch } from '../../request/api/hook';
 import { novelRead } from '../../request/api/novels';
 import { TestContext } from '../../context/TestContext';
 import { fontSizes, themes } from './config/styleConst';
@@ -39,6 +39,8 @@ function NovelRead({
   route:{params:{title,href,index,id}}
 }) {
 
+  const catalogRef = useRef();
+
   const [currentIndex,setCurrentIndex] = useState(index);     //保存index,供后边修改
 
   const [isAdd,setIsAdd] = useState(false);
@@ -63,16 +65,7 @@ function NovelRead({
     add(info);
   }
 
-  const chapterTurn = (delta) => {
-    if(currentIndex === 0 && delta === -1) return 
-    if(currentIndex === catalog.length - 1 && delta === 1) return
-    let newIndex = currentIndex + delta;
-    let href = catalog[newIndex]['href']
-    let title = catalog[newIndex]['chapter']
-    DeviceEventEmitter.emit('chapterTurn',{href,title,index:newIndex,hidde:true});
-  };
-
-  const chapterHandler = ({href,title,index}) => {
+  const changePage = useCallback((index,title,href)=>{
     setLoading(true)
     novelRead(href,abortController.current.signal)
     .then(res => {
@@ -81,11 +74,32 @@ function NovelRead({
       navigation.setParams({title});
     })
     .catch(err => console.log(err))
-    .finally(() => setLoading(false))
-  };
+    .finally(() => {
+      setLoading(false);
+      catalogRef.current.scrollToIndex({animated:false,index});
+    })
+  },[]);
+
+  const prevPage = () => {
+    if(currentIndex !== 0) {
+      let index = currentIndex - 1;
+      let title = catalog[index].chapter;
+      let href = catalog[index].href;
+      changePage(index,title,href);
+    }
+  }
+
+  const nextPage = () => {
+    if(currentIndex !== catalog.length - 1) {
+      let index = currentIndex + 1;
+      let title = catalog[index].chapter;
+      let href = catalog[index].href;
+      changePage(index,title,href);
+    }
+  }
 
   //监听换章,更新内容,修改标题
-  useChapterTurn(chapterHandler);
+  // useChapterTurn(chapterHandler);
   //更新 currentNovelInfo
   useEffect(()=>{
     let index = currentIndex;
@@ -118,11 +132,11 @@ function NovelRead({
         <ScrollView style={themeStyle}>
           <Text style={[styles.content,themeStyle,fontSize]} onPress={callMenu}>{result}</Text>
           <View style={styles.btnBox}>
-            <TouchableOpacity activeOpacity={0.5} onPress={()=>chapterTurn(-1)}>
-              <Text style={[styles.btn,themeStyle,isFirst && styles.disable]}>上一章</Text>
+            <TouchableOpacity activeOpacity={0.5} onPress={prevPage}>
+              <Text style={[styles.btn,themeStyle]}>{ !isFirst && '上一章'}</Text>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.5} onPress={()=>chapterTurn(1)}>
-              <Text style={[styles.btn,themeStyle,isLast && styles.disable]}>下一章</Text>
+            <TouchableOpacity activeOpacity={0.5} onPress={nextPage}>
+              <Text style={[styles.btn,themeStyle]}>{ !isLast && '下一章'}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -137,7 +151,7 @@ function NovelRead({
             cancel={cancel}
           />
           <Setbar size={size} onChange={changeSize}/>
-          <Catalog catalog={catalog} currentIndex={currentIndex} />
+          <Catalog catalog={catalog} currentIndex={currentIndex} change={changePage} ref={catalogRef}/>
         </>
       </TestContext.Provider>
     </>
