@@ -25,7 +25,7 @@ const forXSlideAndOpacity = ({ current: { progress }, inverted, layouts: { scree
 }
 
 export const NovelDetailOpts = ({route}) => ({
-  title: route.params.title,
+  title: route.params.bookName,
   cardOverlayEnabled: true,
   cardStyleInterpolator: forXSlideAndOpacity,
   mode: 'modal',

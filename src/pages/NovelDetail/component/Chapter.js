@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
 import { TouchableOpacity, Text } from 'react-native';
 
-export default memo(function Chapter({title,href,index,result,navigation,id,bookName,author, imgUrl, descr}) {
+export default memo(function Chapter({title,index,href,toNovelRead}) {
 
-  const toNovelRead = () => {
-    navigation.navigate('NovelRead',{href,title,result,index,id,bookName,author, imgUrl, descr})
+  const press = () => {
+    toNovelRead(title,href,index)
   }
 
   return (
-    <TouchableOpacity activeOpacity={.6} onPress={toNovelRead}>
+    <TouchableOpacity activeOpacity={.6} onPress={press}>
       <Text 
         style={{
           height:50,

@@ -11,30 +11,37 @@ import Setbar from './component/Setbar';
 import { useChapterTurn, useFetch } from '../../request/api/hook';
 import { novelRead } from '../../request/api/novels';
 import { TestContext } from '../../context/TestContext';
-import { addNovel, removeNovel, updateNovels } from '../../store/module/novel/novelActionCreators';
-import { setFontSize, setTheme } from '../../store/module/readerStyle/readerStyleActionCreators';
 import { fontSizes, themes } from './config/styleConst';
+import { 
+  setFontSize, 
+  setTheme,
+  updateBookshelfItem,
+  addBookshelfItem,
+  removeBookshelfItem,
+  updateCurrentNovel
+} from '../../store/module/ReaderModule/ActionCreators';
 
 //使用 DeviceEventEmitter 进行组件通讯
 
 function NovelRead({
-  add,
-  remove,
-  update,
-  bookshelf,
   theme,
   size,
-  changeSize,
+  catalog,
+  add,
+  info,
+  remove,
+  bookshelf,
+  updateBookshelf,
   changeTheme,
+  changeSize,
+  updateInfo,
   navigation,
-  route:{
-    params:{href,title,index,result:catalog,id,bookName,author, imgUrl, descr}
-  }
+  route:{params:{title,href,index,id}}
 }) {
 
   const [currentIndex,setCurrentIndex] = useState(index);     //保存index,供后边修改
 
-  const [isAdded,setIsAdded] = useState(false);
+  const [isAdd,setIsAdd] = useState(false);
 
   const { result, loading, setResult, abortController, setLoading } = useFetch(novelRead,[href]);
 
@@ -44,33 +51,16 @@ function NovelRead({
 
   const back = () => navigation.goBack();
 
-  //作者 封面 简介 id 标题 页码 书名 当前章节的地址
-  const novel = {
-    author, 
-    imgUrl, 
-    descr, 
-    id, 
-    title: catalog[currentIndex]['chapter'], 
-    index: currentIndex, 
-    bookName, href:catalog[currentIndex]['href']
+  //取消收藏
+  const cancel = () => {
+    setIsAdd(false);
+    remove(id);
   };
 
-  //取消收藏
-  const cancelCollect = () => {
-    setIsAdded(false);
-    remove(id);
-  }
-
-  //收藏
+  //添加收藏
   const collect = () => {
-    setIsAdded(true);
-    add(novel);
-  }
-
-  //更新收藏状态
-  const updateCollect = () => {
-    // console.log('novel',novel)
-    update(novel);
+    setIsAdd(true);
+    add(info);
   }
 
   const chapterTurn = (delta) => {
@@ -94,21 +84,26 @@ function NovelRead({
     .finally(() => setLoading(false))
   };
 
-  //是否收藏
-  useEffect(() => {
-    let index = bookshelf?.findIndex(item => item.id === id);
-    if(index >= 0) setIsAdded(true);
-  },[])
-
-  //换页且收藏更新记录
-  useEffect(() => {
-    if(isAdded) updateCollect();
-    //更新前面的记录
-    DeviceEventEmitter.emit('updateCurrentRecord',novel);
-  },[isAdded,currentIndex])
-
   //监听换章,更新内容,修改标题
   useChapterTurn(chapterHandler);
+  //更新 currentNovelInfo
+  useEffect(()=>{
+    let index = currentIndex;
+    let href = catalog[index]['href'];
+    let title = catalog[index]['chapter'];
+    updateInfo(title,index,href);
+  },[currentIndex]);
+  //是否添加
+  useEffect(() => {
+    let index = bookshelf.findIndex(item => item.id === id);
+    if(index >= 0) setIsAdd(true);
+  },[])
+  //如果标记,更新收藏记录
+  useEffect(()=>{
+    if(isAdd) {
+      updateBookshelf(info);
+    }
+  },[isAdd,info])
 
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === catalog.length - 1;
@@ -137,9 +132,9 @@ function NovelRead({
           <Menu 
             title={title} 
             back={back} 
-            isAdded={isAdded}
+            isAdded={isAdd}
             collect={collect}
-            cancel={cancelCollect}
+            cancel={cancel}
           />
           <Setbar size={size} onChange={changeSize}/>
           <Catalog catalog={catalog} currentIndex={currentIndex} />
@@ -171,20 +166,25 @@ const styles = StyleSheet.create({
 });
 
 const mapState = state => ({
-  bookshelf: state['novelModule'],
-  size: state['readerStyleModule']['fontSize'],
-  theme: state['readerStyleModule']['theme']
+  bookshelf: state['ReaderModule']['ReaderBookshelfReducer'],
+  info: state['ReaderModule']['ReaderCurrentNovelReducer'],
+  theme: state['ReaderModule']['ReaderStyleReducer']['theme'],
+  size: state['ReaderModule']['ReaderStyleReducer']['fontSize'],
+  catalog: state['ReaderModule']['ReaderCatalogReducer']
 });
 
 const mapDispatch = dispatch => ({
   add(novel) {
-    dispatch(addNovel(novel))
+    dispatch(addBookshelfItem(novel))
   },
   remove(id) {
-    dispatch(removeNovel(id))
+    dispatch(removeBookshelfItem(id))
   },
-  update(novel) {
-    dispatch(updateNovels(novel))
+  updateBookshelf(novel) {
+    dispatch(updateBookshelfItem(novel))
+  },
+  updateInfo(title,index,href) {
+    dispatch(updateCurrentNovel(title,index,href))
   },
   changeSize(size) {
     dispatch(setFontSize(size))

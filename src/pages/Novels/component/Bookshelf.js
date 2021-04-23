@@ -21,18 +21,20 @@ import { connect } from 'react-redux';
 import { H, W } from '../../../util/const';
 import { keyExtractor } from '../../../util/fun';
 import { runTiming } from '../../../util/animation';
+import { 
+  setBookshelf, 
+  setTheme, 
+  setFontSize, 
+  removeBookshelfItem 
+} from '../../../store/module/ReaderModule/ActionCreators';
 import ReadRecord from './ReadRecord';
-import { setNovels, removeNovel } from '../../../store/module/novel/novelActionCreators';
-import { setFontSize, setTheme } from '../../../store/module/readerStyle/readerStyleActionCreators';
 
 // input 90
 //translateY max = boxHeight - 50, min = 0
 //每次手势都是从0开始
 const layout = { width: W, height: H };
 
-function Bookshelf({toNovelDetail,initBookshelf,remove,novels,initFontSize,initTheme}) {
-
-  const isFirst = useRef(true);
+function Bookshelf({toNovelDetail,setData,removeDataItem,data,initFontSize,initTheme}) {
 
   const insets = useSafeAreaInsets();
 
@@ -50,15 +52,11 @@ function Bookshelf({toNovelDetail,initBookshelf,remove,novels,initFontSize,initT
 
   const bookshelf = useRef();
 
-  const removeItem = (id) => {
-    remove(id)
-  }
-
   const renderItem = ({item}) => {
     const {author, imgUrl, descr, id, title, index, bookName, href} = item;
     return (
       <ReadRecord 
-        remove={removeItem}
+        remove={removeDataItem}
         onPress={toNovelDetail}
         author={author}
         imgUrl={imgUrl}
@@ -104,18 +102,16 @@ function Bookshelf({toNovelDetail,initBookshelf,remove,novels,initFontSize,initT
       let bookshelf = res[1][1];
       let fontSize = res[2][1];
       if(theme) initTheme(theme);
-      if(bookshelf) initBookshelf(JSON.parse(bookshelf));
+      if(bookshelf) setData(JSON.parse(bookshelf));
       if(fontSize) initFontSize(fontSize);
     })
   },[])
 
   useEffect(() => {
-    if(isFirst.current) {
-      isFirst.current = false
-    }else{
-      AsyncStorage.setItem('bookshelf',JSON.stringify(novels));
+    if(data) {
+      AsyncStorage.setItem('bookshelf',JSON.stringify(data))
     }
-  },[novels])
+  },[data])
 
   return (
     <PanGestureHandler
@@ -130,7 +126,7 @@ function Bookshelf({toNovelDetail,initBookshelf,remove,novels,initFontSize,initT
       <FlatList 
         ref={bookshelf}
         style={{marginVertical:10}}
-        data={novels}
+        data={data}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         shouldCancelWhenOutside
@@ -145,7 +141,6 @@ const styles = StyleSheet.create({
   bookshelf: {
     position: 'absolute',
     left: 0, right: 0, bottom: 0,top: 0,
-    // minHeight: HEIGHT
   },
   head: {
     backgroundColor: '#fff',
@@ -168,15 +163,15 @@ const styles = StyleSheet.create({
 });
 
 const mapState = state => ({
-  novels: state['novelModule']
+  data: state['ReaderModule']['ReaderBookshelfReducer']
 });
 
 const mapDispatch = dispatch => ({
-  initBookshelf(novels) {
-    dispatch(setNovels(novels))
+  setData(data) {
+    dispatch(setBookshelf(data))
   },
-  remove(id) {
-    dispatch(removeNovel(id))
+  removeDataItem(id) {
+    dispatch(removeBookshelfItem(id))
   },
   initTheme(theme) {
     dispatch(setTheme(theme))

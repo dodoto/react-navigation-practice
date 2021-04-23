@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, FlatList, TouchableNativeFeedback } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -10,8 +10,7 @@ import { keyExtractor } from '../../util/fun';
 import { novelSearch } from '../../request/api/novels';
 import { useFetch } from '../../request/api/hook';
 import Loading from '../../components/Loading';
-import NovelItem from './component/NovelItem';
-import { TestContext } from '../../context/TestContext';
+import SearchItem from './component/SearchItem';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -31,47 +30,49 @@ export default function NovelSearch({navigation, route:{ params: { keyword } } }
     navigation.goBack();
   };
 
+  const toNovelDetail = useCallback((params) => {
+    navigation.navigate('NovelDetail',params);
+  },[navigation])
+
   const renderItem = ({item:{title,author,id,imgUrl,descr}}) => {
     return (
-      <NovelItem 
-        title={title} 
+      <SearchItem 
+        bookName={title} 
         author={author} 
         id={id} 
         imgUrl={imgUrl} 
         descr={descr} 
-        navigation={navigation}
+        toDetail={toNovelDetail}
       />
     );
   }
 
   return (
-    <TestContext.Provider value={{navigation}}>
-      <>
-        <Animated.View style={{borderBottomColor:'#DCDFE6',borderBottomWidth:borderWidth}}>
-          <TouchableNativeFeedback
-            onPress={close}
-            background={TouchableNativeFeedback.Ripple('#909399',true,16)}
-            useForeground={TouchableNativeFeedback.canUseNativeForeground()}
-          >
-            <View style={{margin:10,alignSelf:'flex-end'}}>
-              <Feather name="x" size={24}/>
-            </View>
-          </TouchableNativeFeedback>
-        </Animated.View>
-        {
-          loading ?
-          <Loading />:
-          <AnimatedFlatList
-            data={result}
-            renderItem={renderItem}
-            keyExtractor={keyExtractor}
-            ListEmptyComponent={<Text style={{textAlign:'center'}}>没有搜到你要的小说 (。・_・。)ﾉ </Text>}
-            onScroll={Animated.event(
-              [{nativeEvent: {contentOffset: {y: scrollY}}}],
-            )}
-          />
-        }
-      </>
-    </TestContext.Provider>
+    <>
+      <Animated.View style={{borderBottomColor:'#DCDFE6',borderBottomWidth:borderWidth}}>
+        <TouchableNativeFeedback
+          onPress={close}
+          background={TouchableNativeFeedback.Ripple('#909399',true,16)}
+          useForeground={TouchableNativeFeedback.canUseNativeForeground()}
+        >
+          <View style={{margin:10,alignSelf:'flex-end'}}>
+            <Feather name="x" size={24}/>
+          </View>
+        </TouchableNativeFeedback>
+      </Animated.View>
+      {
+        loading ?
+        <Loading />:
+        <AnimatedFlatList
+          data={result}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          ListEmptyComponent={<Text style={{textAlign:'center'}}>没有搜到你要的小说 (。・_・。)ﾉ </Text>}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          )}
+        />
+      }
+    </>
   );
 }

@@ -26,8 +26,8 @@ export default function Novels({navigation}) {
     query.current = text;
   };
 
-  const toNovelDetail = (id,title,index,author,imgUrl,descr) => {
-    navigation.navigate('NovelDetail',{id,title,index,author,imgUrl,descr})
+  const toNovelDetail = (id,bookName,index,author,imgUrl,descr,title,href) => {
+    navigation.navigate('NovelDetail',{id,bookName,index,author,imgUrl,descr,title,href})
   };
 
   useFocusEffect(()=>{

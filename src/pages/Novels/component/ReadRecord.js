@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
-import { Alert, Text, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
-import FastImage from 'react-native-fast-image';
+import NovelItem from '../../../components/NovelItem';
 
 export default memo(function ReadRecord({
   author, 
@@ -10,13 +10,14 @@ export default memo(function ReadRecord({
   id, 
   title, 
   index, 
+  href,
   bookName, 
   onPress,
   remove
 }) {
 
   const handler = () => {
-    onPress(id,bookName,index,author,imgUrl,descr);
+    onPress(id,bookName,index,author,imgUrl,descr,title,href);
   }
 
   const removeHandler = () => {
@@ -49,20 +50,14 @@ export default memo(function ReadRecord({
         style={styles.card}
         onLongPress={removeTip}
       >
-        <View style={{flexDirection:'row'}}>
-          <FastImage
-            source={{uri:imgUrl,priority: FastImage.priority.normal}}
-            style={{width:100,height:150,borderRadius:10}}
-            resizeMode={FastImage.resizeMode.contain}
-          />
-          <View style={{flex:1,paddingLeft:10,paddingVertical:10,justifyContent:'space-between'}}>
-            <Text style={styles.bookName}>{bookName}</Text>
-            <Text style={styles.author}>作者 {author}</Text>
-            <Text style={styles.descr}>{descr}</Text>
-            <Text style={styles.record}>阅读至{title}</Text>
-          </View>
-
-        </View>
+        <NovelItem 
+          imgUrl={imgUrl}
+          bookName={bookName}
+          descr={descr}
+          author={author}
+          title={title}
+          color={'#909399'}
+        />
       </TouchableHighlight>
   );
 })
@@ -72,20 +67,5 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 5,
     backgroundColor: '#DCDFE6',
-    padding: 10
-  },
-  author: {
-    color: 'green'
-  },
-  bookName: {
-    fontSize: 16,
-    color: '#808388'
-  },
-  descr: {
-    color: '#909399',
-    flex: 1
-  },  
-  record: {
-    color: '#a0a4aa'
-  },
+  }
 });
