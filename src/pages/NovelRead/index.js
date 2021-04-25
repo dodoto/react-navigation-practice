@@ -80,24 +80,6 @@ function NovelRead({
     })
   },[]);
 
-  const prevPage = () => {
-    if(currentIndex !== 0) {
-      let index = currentIndex - 1;
-      let title = catalog[index].chapter;
-      let href = catalog[index].href;
-      changePage(index,title,href);
-    }
-  }
-
-  const nextPage = () => {
-    if(currentIndex !== catalog.length - 1) {
-      let index = currentIndex + 1;
-      let title = catalog[index].chapter;
-      let href = catalog[index].href;
-      changePage(index,title,href);
-    }
-  }
-
   //监听换章,更新内容,修改标题
   // useChapterTurn(chapterHandler);
   //更新 currentNovelInfo
@@ -123,6 +105,24 @@ function NovelRead({
   const isLast = currentIndex === catalog.length - 1;
   const themeStyle = themes[theme];
   const fontSize = {fontSize:fontSizes[size]};
+
+  const prevPage = () => {
+    if(!isFirst) {
+      let index = currentIndex - 1;
+      let title = catalog[index].chapter;
+      let href = catalog[index].href;
+      changePage(index,title,href);
+    }
+  }
+
+  const nextPage = () => {
+    if(!isLast) {
+      let index = currentIndex + 1;
+      let title = catalog[index].chapter;
+      let href = catalog[index].href;
+      changePage(index,title,href);
+    }
+  }
 
   return (
     <>
