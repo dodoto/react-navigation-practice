@@ -35,7 +35,7 @@ export default connect(mapState)(memo(function NovelInfoBox({navigation,info}) {
 
 const styles = StyleSheet.create({
   catalogHead: {
-    flex:1,
+    height: 40,
     paddingLeft:10,
     backgroundColor:'#DCDFE6',
     lineHeight: 40,

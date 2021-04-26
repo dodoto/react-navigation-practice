@@ -28,19 +28,17 @@ export default function TopTabNavigator() {
   },[]);
 
   return (
-    <>
-      <TopTab.Navigator
-        lazy
-        tabBarOptions={TabBarOptions}
-      >
-        <TopTab.Screen name="昆仑德语社" getComponent={()=> TVandMovie}/>
-        <TopTab.Screen name="欧美剧集" getComponent={()=> TVandMovie}/>
-        <TopTab.Screen name="欧美电影" getComponent={()=> TVandMovie}/>
-        <TopTab.Screen name="综艺纪录" getComponent={()=> TVandMovie}/>
-        <TopTab.Screen name="fix法语社" getComponent={()=> TVandMovie}/>
-        <TopTab.Screen name="fix韩语社" getComponent={()=> TVandMovie}/>
-        <TopTab.Screen name="fix日语社" getComponent={()=> TVandMovie}/>
-      </TopTab.Navigator>
-    </>
+    <TopTab.Navigator
+      lazy
+      tabBarOptions={TabBarOptions}
+    >
+      <TopTab.Screen name="昆仑德语社" getComponent={()=> TVandMovie}/>
+      <TopTab.Screen name="欧美剧集" getComponent={()=> TVandMovie}/>
+      <TopTab.Screen name="欧美电影" getComponent={()=> TVandMovie}/>
+      <TopTab.Screen name="综艺纪录" getComponent={()=> TVandMovie}/>
+      <TopTab.Screen name="fix法语社" getComponent={()=> TVandMovie}/>
+      <TopTab.Screen name="fix韩语社" getComponent={()=> TVandMovie}/>
+      <TopTab.Screen name="fix日语社" getComponent={()=> TVandMovie}/>
+    </TopTab.Navigator>
   );
 }

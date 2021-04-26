@@ -1,6 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, Animated, Easing, PanResponder, FlatList, Text, StyleSheet, RefreshControl } from 'react-native';
-//使用 PanResponder 来做手势
+import { 
+  ActivityIndicator, 
+  FlatList, 
+  Text, 
+  StyleSheet ,
+  Animated,
+  Easing,
+  PanResponder
+} from 'react-native';
+
+//react-native-gesture-handler 和 react-native-reanimated 太复杂了,还是用 PanResponder 和 Animated 吧
+
+
 import { connect } from 'react-redux'; 
 import { novelDetail } from '../../request/api/novels';
 import { useFetch } from '../../request/api/hook';
@@ -10,6 +21,7 @@ import Chapter from './component/Chapter';
 import NovelPage from './component/NovelPage';
 import NovelInfoBox from './component/NovelInfoBox';
 import { setCurrentNovel, resetCurrentNovel, setCatalog } from '../../store/module/ReaderModule/ActionCreators';
+import { H } from '../../util/const';
 
 
 function getItemLayout(data,index) {
@@ -21,11 +33,15 @@ function NovelDetail({setInfo,clearInfo,initCatalog,navigation, route: {params:{
   //一页100条
   const [ page, setPage ] = useState(1);  
   
-  const { result, loading, setLoading, setResult, abortController } = useFetch(novelDetail,[id]);  //数据
+  const { result, setResult, loading, abortController } = useFetch(novelDetail,[id]);  //数据
+
+  const [refreshLoading,setRefreshLoading] = useState(false);
+
+  
 
   const refresh = () => {
     let message;
-    setLoading(true);
+    setRefreshLoading(true);
     novelDetail(id,abortController.current.signal)
     .then(res => setResult(res))
     .catch(err => {
@@ -34,7 +50,16 @@ function NovelDetail({setInfo,clearInfo,initCatalog,navigation, route: {params:{
     })
     .finally(() => {
       // 'Aborted'
-      if(message !== 'Aborted') setLoading(false)
+      if(message !== 'Aborted') setRefreshLoading(false)
+      Animated.timing(
+        dragY,
+        {
+          toValue: 0,
+          duration: 300,
+          easing: Easing.ease,
+          useNativeDriver: true
+        }
+      ).start()
     })
   }
 
@@ -63,9 +88,46 @@ function NovelDetail({setInfo,clearInfo,initCatalog,navigation, route: {params:{
     //210 = 170 + 40 NovelInfoBox
     setPage(page);
     requestAnimationFrame(() => {
-      list.current.scrollToOffset({offset:170,animated:false});
+      // list.current.getNode().scrollToOffset({offset:0,animated:false});
+      list.current.scrollToOffset({offset:0,animated:false});
     });
   };
+
+  const dragY = useRef(new Animated.Value(0)).current;  //手势移动的值
+
+  const THRESHOLD = 90 
+
+  const diff = 0.25
+
+  const pan = PanResponder.create({
+    onStartShouldSetPanResponder: () => !refreshLoading,
+    onPanResponderMove: Animated.event(
+      [null, { dy: dragY}],
+      {useNativeDriver: false}
+    ),
+    onPanResponderRelease: (evt,{ dy }) => {
+      
+      if(dy * diff > THRESHOLD) {
+        refresh()
+      }else{
+        Animated.spring(
+          dragY,
+          {
+            toValue: 0,
+            useNativeDriver: true
+          }
+        ).start()
+      }
+    }
+  });
+
+  const _translateY = Animated.multiply(dragY,diff)
+
+  const translateY = _translateY.interpolate({   //动画值
+    inputRange: [0,H+100],
+    outputRange: [0,H+100],
+    extrapolate: 'clamp'
+  })
 
   useEffect(()=>{
     if(result) {
@@ -98,28 +160,60 @@ function NovelDetail({setInfo,clearInfo,initCatalog,navigation, route: {params:{
       {
         loading ?
         <Loading />:
-        <FlatList 
-          ref={list}
-          data={renderData}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          getItemLayout={getItemLayout}
-          onRefresh={refresh}
-          refreshing={loading}
-          refreshControl={
-            <RefreshControl 
-              refreshing={loading}
-              onRefresh={refresh}
-              colors={['#79bbff','#67C23A']}
+        <>
+          <Animated.View style={[styles.refreshBack,{transform:[{translateY}]}]}>
+            <ActivityIndicator 
+              size="large" 
+              color="#409EFF" 
+              animating={refreshLoading} 
+              hidesWhenStopped={false}
             />
-          }
-          ListFooterComponent={<NovelPage pickers={pickers} page={page} pageChange={pageChange}/>}
-          ListHeaderComponent={<NovelInfoBox navigation={navigation}/>}
-        />
+            {!refreshLoading && <Text style={styles.tip}>松开</Text>}
+          </Animated.View>
+
+          <Animated.View 
+            {...pan.panHandlers}
+            style={[{flex:1,backgroundColor:'#fff'},{transform:[{translateY}]}]}
+          >
+            <NovelInfoBox navigation={navigation}/>
+            <FlatList 
+              ref={list}
+              style={{flex:1}}
+              data={renderData}
+              renderItem={renderItem}
+              keyExtractor={keyExtractor}
+              getItemLayout={getItemLayout}
+              ListFooterComponent={<NovelPage pickers={pickers} page={page} pageChange={pageChange}/>}
+              // ListHeaderComponent={}
+            />
+          </Animated.View>
+        </>
       }
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  refreshBack: {
+    width:'100%',
+    height: H,
+    // backgroundColor:'skyblue',
+    justifyContent: 'flex-end',
+    position:'absolute',
+    zIndex:-1,
+    top: -H,
+    paddingBottom: 60
+  },
+  tip: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 0,
+    height: 160,
+    zIndex: -1,
+    textAlign: 'center',
+    lineHeight: 160
+  }
+})
 
 const mapState = () => ({})
 
