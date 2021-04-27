@@ -9,6 +9,8 @@ import {
   PanResponder
 } from 'react-native';
 
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 //react-native-gesture-handler 和 react-native-reanimated 太复杂了,还是用 PanResponder 和 Animated 吧
 
 
@@ -88,6 +90,8 @@ function NovelDetail({setInfo,clearInfo,initCatalog,navigation, route: {params:{
     //210 = 170 + 40 NovelInfoBox
     setPage(page);
     requestAnimationFrame(() => {
+      console.log(list.current.getNode())
+      return
       // list.current.getNode().scrollToOffset({offset:0,animated:false});
       list.current.scrollToOffset({offset:0,animated:false});
     });
@@ -175,16 +179,15 @@ function NovelDetail({setInfo,clearInfo,initCatalog,navigation, route: {params:{
             {...pan.panHandlers}
             style={[{flex:1,backgroundColor:'#fff'},{transform:[{translateY}]}]}
           >
-            <NovelInfoBox navigation={navigation}/>
             <FlatList 
               ref={list}
-              style={{flex:1}}
+              style={{flex:1,elevation:10}}
               data={renderData}
               renderItem={renderItem}
               keyExtractor={keyExtractor}
               getItemLayout={getItemLayout}
               ListFooterComponent={<NovelPage pickers={pickers} page={page} pageChange={pageChange}/>}
-              // ListHeaderComponent={}
+              ListHeaderComponent={<NovelInfoBox navigation={navigation}/>}
             />
           </Animated.View>
         </>
@@ -197,7 +200,7 @@ const styles = StyleSheet.create({
   refreshBack: {
     width:'100%',
     height: H,
-    // backgroundColor:'skyblue',
+    backgroundColor:'#d9ecff',
     justifyContent: 'flex-end',
     position:'absolute',
     zIndex:-1,
