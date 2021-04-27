@@ -13,13 +13,13 @@ export default function NovelItem({imgUrl,bookName,author,descr,title,toNovelRea
       <View style={styles.text}>
         <Text>{bookName}</Text>
         <Text style={{color:'#909399'}}>{author}</Text>
-        <Text style={{color:'#606266',flex:1}} ellipsizeMode="tail" numberOfLines={7}>{descr}</Text> 
-          <Text
+        <Text style={{color:'#606266',flex:1}} ellipsizeMode="tail" numberOfLines={5}>{descr}</Text> 
+        {title &&   <Text
             onPress={toNovelRead && toNovelRead} 
             style={{color}}
           >
-            { title && `阅读至${title}`}
-          </Text>
+            阅读至 {title}
+          </Text>}
       </View>
     </View>
   );
