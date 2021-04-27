@@ -9,10 +9,7 @@ import {
   PanResponder
 } from 'react-native';
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
 //react-native-gesture-handler 和 react-native-reanimated 太复杂了,还是用 PanResponder 和 Animated 吧
-
 
 import { connect } from 'react-redux'; 
 import { novelDetail } from '../../request/api/novels';
@@ -39,9 +36,51 @@ function NovelDetail({setInfo,clearInfo,initCatalog,navigation, route: {params:{
 
   const [refreshLoading,setRefreshLoading] = useState(false);
 
-  
+  const dragY = useRef(new Animated.Value(0)).current;  //手势移动的值
+
+  const THRESHOLD = 90 
+
+  const diff = 0.25
+
+  const springAnim = () => {
+    Animated.spring(
+      dragY,
+      {
+        toValue: 0,
+        useNativeDriver: true
+      }
+    ).start()
+  }
+
+  const pan = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderMove: Animated.event(
+      [null, { dy: dragY}],
+      {useNativeDriver: false}
+    ),
+    onPanResponderRelease: (evt,{ dy }) => {
+      if(dy * diff > THRESHOLD) {
+        refresh()
+      }else{
+        springAnim()
+      }
+    }
+  });
+
+  const _translateY = Animated.multiply(dragY,diff);
+
+  const translateY = _translateY.interpolate({   //动画值
+    inputRange: [0,H+100],
+    outputRange: [0,H+100],
+    extrapolate: 'clamp'
+  })
+
+  const backWithScroll = () => {
+    if(dragY._value) springAnim()
+  }
 
   const refresh = () => {
+    if(refreshLoading) return
     let message;
     setRefreshLoading(true);
     novelDetail(id,abortController.current.signal)
@@ -90,48 +129,9 @@ function NovelDetail({setInfo,clearInfo,initCatalog,navigation, route: {params:{
     //210 = 170 + 40 NovelInfoBox
     setPage(page);
     requestAnimationFrame(() => {
-      console.log(list.current.getNode())
-      return
-      // list.current.getNode().scrollToOffset({offset:0,animated:false});
       list.current.scrollToOffset({offset:0,animated:false});
     });
   };
-
-  const dragY = useRef(new Animated.Value(0)).current;  //手势移动的值
-
-  const THRESHOLD = 90 
-
-  const diff = 0.25
-
-  const pan = PanResponder.create({
-    onStartShouldSetPanResponder: () => !refreshLoading,
-    onPanResponderMove: Animated.event(
-      [null, { dy: dragY}],
-      {useNativeDriver: false}
-    ),
-    onPanResponderRelease: (evt,{ dy }) => {
-      
-      if(dy * diff > THRESHOLD) {
-        refresh()
-      }else{
-        Animated.spring(
-          dragY,
-          {
-            toValue: 0,
-            useNativeDriver: true
-          }
-        ).start()
-      }
-    }
-  });
-
-  const _translateY = Animated.multiply(dragY,diff)
-
-  const translateY = _translateY.interpolate({   //动画值
-    inputRange: [0,H+100],
-    outputRange: [0,H+100],
-    extrapolate: 'clamp'
-  })
 
   useEffect(()=>{
     if(result) {
@@ -181,7 +181,8 @@ function NovelDetail({setInfo,clearInfo,initCatalog,navigation, route: {params:{
           >
             <FlatList 
               ref={list}
-              style={{flex:1,elevation:10}}
+              onScrollBeginDrag={backWithScroll}
+              style={{flex:1}}
               data={renderData}
               renderItem={renderItem}
               keyExtractor={keyExtractor}
