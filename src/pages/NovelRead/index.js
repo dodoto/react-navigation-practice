@@ -20,6 +20,7 @@ import {
   removeBookshelfItem,
   updateCurrentNovel
 } from '../../store/module/ReaderModule/ActionCreators';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //使用 DeviceEventEmitter 进行组件通讯
 
@@ -100,6 +101,11 @@ function NovelRead({
       updateBookshelf(info);
     }
   },[isAdd,info])
+  //更新缓存
+  useEffect(()=>{
+    // console.log(bookshelf)
+    AsyncStorage.setItem('bookshelf',JSON.stringify(bookshelf))
+  },[isAdd,bookshelf])
 
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === catalog.length - 1;

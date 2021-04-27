@@ -14,7 +14,7 @@ export default function NovelItem({imgUrl,bookName,author,descr,title,toNovelRea
         <Text>{bookName}</Text>
         <Text style={{color:'#909399'}}>{author}</Text>
         <Text style={{color:'#606266',flex:1}} ellipsizeMode="tail" numberOfLines={5}>{descr}</Text> 
-        {title &&   <Text
+        {!!title && <Text
             onPress={toNovelRead && toNovelRead} 
             style={{color}}
           >

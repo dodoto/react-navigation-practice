@@ -107,11 +107,6 @@ function Bookshelf({toNovelDetail,setData,removeDataItem,data,initFontSize,initT
     })
   },[])
 
-  useEffect(() => {
-    //在这里执行会导致 直接从进程里抹除app存空数组到本地 return 里没有这个问题
-    return () => AsyncStorage.setItem('bookshelf',JSON.stringify(data))
-  },[data])
-
   return (
     <PanGestureHandler
       onGestureEvent={handler}
