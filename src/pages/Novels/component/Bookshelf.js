@@ -17,6 +17,7 @@ import Animated,
   } from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
 import { H, W } from '../../../util/const';
 import { keyExtractor } from '../../../util/fun';
@@ -35,6 +36,8 @@ import ReadRecord from './ReadRecord';
 const layout = { width: W, height: H };
 
 function Bookshelf({toNovelDetail,setData,removeDataItem,data,initFontSize,initTheme}) {
+
+  const isFocused = useIsFocused();
 
   const insets = useSafeAreaInsets();
 
@@ -106,6 +109,10 @@ function Bookshelf({toNovelDetail,setData,removeDataItem,data,initFontSize,initT
       if(fontSize) initFontSize(fontSize);
     })
   },[])
+  //删除的时候更新本地存储
+  useEffect(()=>{
+    if(isFocused) AsyncStorage.setItem('bookshelf',JSON.stringify(data))
+  },[data])
 
   return (
     <PanGestureHandler
