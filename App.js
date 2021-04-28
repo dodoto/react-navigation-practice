@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StatusBar, UIManager } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -6,7 +6,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import StackNavigator from './src/router/StackNavigator';
 import store from './src/store/index';
 import { Provider } from 'react-redux';
-import SplashScreen from 'react-native-splash-screen';
 
 if (
   Platform.OS === "android" &&
@@ -16,9 +15,7 @@ if (
 }
 
 const App: () => React$Node = () => {
-  useEffect(()=>{
-    SplashScreen.hide();
-  },[])
+
   return (
     <>
       <StatusBar translucent backgroundColor="transparent" barStyle='dark-content'/>
