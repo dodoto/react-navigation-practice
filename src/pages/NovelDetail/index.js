@@ -6,7 +6,8 @@ import {
   StyleSheet ,
   Animated,
   Easing,
-  PanResponder
+  PanResponder,
+  ToastAndroid
 } from 'react-native';
 
 //react-native-gesture-handler 和 react-native-reanimated 太复杂了,还是用 PanResponder 和 Animated 吧
@@ -84,7 +85,10 @@ function NovelDetail({setInfo,clearInfo,initCatalog,navigation, route: {params:{
     let message;
     setRefreshLoading(true);
     novelDetail(id,abortController.current.signal)
-    .then(res => setResult(res))
+    .then(res => {
+      setResult(res)
+      message = '刷新成功'
+    })
     .catch(err => {
       if(err.name !== 'AbortError') ToastAndroid.show(err,300);
       message = err.message;
@@ -101,6 +105,8 @@ function NovelDetail({setInfo,clearInfo,initCatalog,navigation, route: {params:{
           useNativeDriver: true
         }
       ).start()
+      const { showWithGravityAndOffset, LONG, TOP } = ToastAndroid
+      showWithGravityAndOffset(message,LONG,TOP,0,200)
     })
   }
 

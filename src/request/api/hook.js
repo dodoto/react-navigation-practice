@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { ToastAndroid, DeviceEventEmitter, BackHandler } from 'react-native';
 import Animated, { Easing, useValue } from 'react-native-reanimated';
+import SplashScreen from 'react-native-splash-screen';
 
 export function useFetch (requestFun,params=[],deps = []) {
   const abortController = useRef(new AbortController());
@@ -88,5 +89,12 @@ export function useBackHandler(callback) {
     BackHandler.addEventListener('hardwareBackPress',callback);
     return () => BackHandler.removeEventListener('hardwareBackPress',callback);
   },[])
+}
+
+//Splash Screen Hook
+export function useScreenHide() {
+  useEffect(() => {
+    SplashScreen.hide();
+  })
 }
 

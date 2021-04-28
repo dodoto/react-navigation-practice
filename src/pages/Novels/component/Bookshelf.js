@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, AppState } from 'react-native';
 import { getDefaultHeaderHeight } from '@react-navigation/drawer/src/views/Header';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PanGestureHandler, State, FlatList } from 'react-native-gesture-handler';
@@ -17,7 +17,6 @@ import Animated,
   } from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
 
 import { H, W } from '../../../util/const';
 import { keyExtractor } from '../../../util/fun';
@@ -36,8 +35,6 @@ import ReadRecord from './ReadRecord';
 const layout = { width: W, height: H };
 
 function Bookshelf({toNovelDetail,setData,removeDataItem,data,initFontSize,initTheme}) {
-
-  const isFocused = useIsFocused();
 
   const insets = useSafeAreaInsets();
 
@@ -109,9 +106,16 @@ function Bookshelf({toNovelDetail,setData,removeDataItem,data,initFontSize,initT
       if(fontSize) initFontSize(fontSize);
     })
   },[])
-  //删除的时候更新本地存储
-  useEffect(()=>{
-    if(isFocused) AsyncStorage.setItem('bookshelf',JSON.stringify(data))
+  
+  //app进入后台重新保存记录到本地
+  useEffect(() => {
+    const handler = (state) => {
+      if(state === 'background') {
+        AsyncStorage.setItem('bookshelf',JSON.stringify(data))
+      }
+    } 
+    AppState.addEventListener('change',handler)
+    return () => AppState.removeEventListener('change',handler)
   },[data])
 
   return (

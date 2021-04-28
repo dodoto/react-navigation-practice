@@ -101,11 +101,6 @@ function NovelRead({
       updateBookshelf(info);
     }
   },[isAdd,info])
-  //更新缓存
-  useEffect(()=>{
-    // console.log(bookshelf)
-    AsyncStorage.setItem('bookshelf',JSON.stringify(bookshelf))
-  },[isAdd,bookshelf])
 
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === catalog.length - 1;

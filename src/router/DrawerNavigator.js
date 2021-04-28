@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Journal  from '../pages/Journal/index';
@@ -9,6 +9,9 @@ import DrawerContent from './components/DrawerContent';
 import DrawerRightBtn from './components/DrawerRightBtn';
 
 import { TestContext } from '../context/TestContext';
+import { useFocusEffect } from '@react-navigation/core';
+import { BackHandler, ToastAndroid } from 'react-native';
+
 
 const Drawer = createDrawerNavigator();
 
@@ -19,6 +22,24 @@ const commonOpts = {
 }
 
 export default function DrawerNavigator({navigation,route}) {
+
+  const lastPressTime = useRef(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if(lastPressTime.current + 2000 >= Date.now()) {
+          return false  //返回false会冒泡到navigation的监听器然后退出
+        }else{
+          lastPressTime.current = Date.now();
+          ToastAndroid.show('再按一次退出',500);
+          return true
+        }
+      }
+      BackHandler.addEventListener('hardwareBackPress',onBackPress);
+      return () => BackHandler.removeEventListener('hardwareBackPress',onBackPress);
+    },[])
+  )
 
   return (
     <TestContext.Provider value={{navigation}}>

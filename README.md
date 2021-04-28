@@ -136,3 +136,8 @@
 
   const AnimatedTextInput = Animated.createAnimatedComponent.
   AnimatedTextInput在scaleX(0) 的情况下仍能被触摸focus到.
+
+  7.
+
+  redux的数据会在app杀死进程的时候被清空,如果在useEffect中对应数据的保存会变成存一个空数据.
+  选择在AppState change的事件中做保存没有这个问题.
