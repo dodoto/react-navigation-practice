@@ -135,7 +135,7 @@ function Bookshelf({toNovelDetail,setData,removeDataItem,data,initFontSize,initT
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         shouldCancelWhenOutside
-        ListEmptyComponent={<Text style={styles.empty}>目前没有再追的书 (。・_・。)ﾉ </Text>}
+        ListEmptyComponent={<Text style={styles.empty}>目前没有在追的书 (。・_・。)ﾉ </Text>}
       />
     </Animated.View>
     </PanGestureHandler>

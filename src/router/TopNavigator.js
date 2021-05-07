@@ -28,6 +28,7 @@ export default function TopTabNavigator() {
   return (
     <TopTab.Navigator
       lazy
+      backBehavior="none"
       tabBarOptions={TabBarOptions}
     >
       <TopTab.Screen name="欧美剧集" getComponent={()=> TVandMovie}/>
