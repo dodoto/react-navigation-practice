@@ -4,13 +4,12 @@ import Feather from 'react-native-vector-icons/Feather';
 
 import Animated, { Easing, useValue } from 'react-native-reanimated';
 
-import { TestContext } from '../../context/TestContext';
+import { useTestContext } from '../../context/TestContext';
 import { W } from '../../util/const';
-import { useBackHandler } from '../../request/api/hook';
 
 export default function DrawerRightBtn() {
 
-  const { navigation } = useContext(TestContext);
+  const { navigation } = useTestContext();
 
   const [inputShow,setInputShow] = useState(false);
 

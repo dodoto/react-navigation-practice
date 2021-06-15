@@ -3,7 +3,7 @@ import { Text, StyleSheet, View, DeviceEventEmitter, BackHandler, TouchableHighl
 import Animated from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { TestContext } from '../../../context/TestContext';
+import { useThemeContext } from '../../../context';
 import { useBackHandler, useReadMenuAnima } from '../../../request/api/hook';
 import { H } from '../../../util/const';
 
@@ -11,7 +11,7 @@ export default memo(function Setbar({size,onChange}) {
 
   const { translate:translateY, state } = useReadMenuAnima(H,'callSetbar');
 
-  const { theme } = useContext(TestContext);
+  const { theme } = useThemeContext();
 
   const dismiss = () => {
     DeviceEventEmitter.emit('callSetbar');

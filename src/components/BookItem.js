@@ -2,10 +2,10 @@ import React, { memo, useContext } from 'react';
 import { View, Text,  StyleSheet, TouchableOpacity } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
-import { TestContext } from '../context/TestContext';
+import { useTestContext } from '../context/TestContext';
 
 export default memo(function BookItem({author,image,title,id,fav_nums}) {
-  const { navigation } = useContext(TestContext);
+  const { navigation } = useTestContext()
   // console.log(title);
   let toBookDetail = () => {
     navigation.navigate('BookDetail',{title,id});

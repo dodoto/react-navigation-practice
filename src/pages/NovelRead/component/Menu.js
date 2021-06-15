@@ -6,11 +6,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useReadMenuAnima } from '../../../request/api/hook';
-import { TestContext } from '../../../context/TestContext';
+import { useThemeContext } from '../../../context';
 
 export default memo(function Menu({title,back,isAdded,collect,cancel}) {
 
-  const { theme, setTheme, themeName } = useContext(TestContext);
+  const { theme, setTheme, themeName } = useThemeContext();
 
   const { translate:headTranslateY } = useReadMenuAnima(-70,'callMenu');
 

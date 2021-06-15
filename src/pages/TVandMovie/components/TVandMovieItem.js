@@ -3,11 +3,11 @@ import { View, Image, Text, StyleSheet, TouchableNativeFeedback } from 'react-na
 import FastImage from 'react-native-fast-image';
 
 import { W } from '../../../util/const';
-import { TestContext } from '../../../context/TestContext';
+import { useTestContext } from '../../../context/TestContext';
 
 export default memo(function TVandMovieItem({imgUrl,title,cat,href}) {
 
-  const { navigation } = useContext(TestContext);
+  const { navigation } = useTestContext();
 
   const toDetail = () => {
     navigation.navigate('TVandMovieDetail',{href,title});

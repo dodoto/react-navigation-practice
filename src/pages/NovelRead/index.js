@@ -10,7 +10,6 @@ import Catalog from './component/Catalog';
 import Setbar from './component/Setbar';
 import { useFetch } from '../../request/api/hook';
 import { novelRead } from '../../request/api/novels';
-import { TestContext } from '../../context/TestContext';
 import { fontSizes, themes } from './config/styleConst';
 import { 
   setFontSize, 
@@ -20,7 +19,7 @@ import {
   removeBookshelfItem,
   updateCurrentNovel
 } from '../../store/module/ReaderModule/ActionCreators';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import ThemeContextProvider from '../../context/ThemeContextProvider';
 
 //使用 DeviceEventEmitter 进行组件通讯
 
@@ -142,7 +141,7 @@ function NovelRead({
           </View>
         </ScrollView>
       }
-      <TestContext.Provider value={{ theme: themes[theme], themeName: theme, setTheme:changeTheme }}>
+      <ThemeContextProvider theme={themes[theme]} themeName={theme} setTheme={changeTheme}>
         <>
           <Menu 
             title={title} 
@@ -154,7 +153,7 @@ function NovelRead({
           <Setbar size={size} onChange={changeSize}/>
           <Catalog catalog={catalog} currentIndex={currentIndex} change={changePage} ref={catalogRef}/>
         </>
-      </TestContext.Provider>
+      </ThemeContextProvider>
     </>
   );
 }

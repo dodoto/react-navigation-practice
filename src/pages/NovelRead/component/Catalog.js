@@ -6,13 +6,11 @@ import { useBackHandler, useReadMenuAnima } from '../../../request/api/hook';
 import { W } from '../../../util/const';
 import { keyExtractor, getItemLayout as layout } from '../../../util/fun';
 import CatalogItem from './CatalogItem';
-import { TestContext } from '../../../context/TestContext';
+import { useThemeContext } from '../../../context';
 
 export default memo(forwardRef(function Catalog({catalog,currentIndex,change},ref) {
 
-                                     //flatlist实例 
-
-  const { theme } = useContext(TestContext);
+  const { theme } = useThemeContext();
 
   const { translate:translateX, state } = useReadMenuAnima(W,'callCatalog');
 
